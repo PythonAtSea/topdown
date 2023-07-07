@@ -82,24 +82,22 @@ class Tile:
         self.img = img
 
     def draw(self):
-        screen.blit(self.img, (self.x - offsetx, self.y + offsety))
+        if (
+                -64 < self.x - offsetx < screen.get_width()
+                and -64 < self.y + offsety < screen.get_height()
+        ):
+            screen.blit(self.img, (self.x - offsetx, self.y + offsety))
 
 
 class Barrier(Tile):
     def __init__(self, x, y):
         super().__init__(x, y, imgs[1])
 
-    def draw(self):
-        if time.time() % 0.75 < 0.375:
-            self.img = imgs[1]
-        else:
-            self.img = imgs[2]
-        screen.blit(self.img, (self.x - offsetx, self.y + offsety))
-
 
 class Grass(Tile):
     def __init__(
-        self, x, y, up, down, left, right, test, upleft, upright, downleft, downright
+            self, x, y, up, down, left, right, test, upleft, upright, downleft,
+            downright
     ):
         super().__init__(x, y, grassimgs["g"])
         self.up = up
@@ -113,7 +111,6 @@ class Grass(Tile):
         self.test = test
         if self.test:
             self.img = grassimgs["t"]
-
         elif self.up and self.right and self.left:
             self.img = grassimgs["gulr"]
         elif self.up and self.right and self.down:
@@ -309,8 +306,8 @@ class Player:
                             (i * 32 + screen.get_width() - 325, offset),
                         )
                     elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
+                            displayhealth > (i - 1 * 10) + 5
+                            and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["h2"],
@@ -330,8 +327,8 @@ class Player:
                             (i * 32 + screen.get_width() - 325, offset),
                         )
                     elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
+                            displayhealth > (i - 1 * 10) + 5
+                            and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["fh2"],
@@ -350,8 +347,8 @@ class Player:
                             healthimgs["h1"], (i * 32 + screen.get_width() - 325, 0)
                         )
                     elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
+                            displayhealth > (i - 1 * 10) + 5
+                            and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["h2"], (i * 32 + screen.get_width() - 325, 0)
@@ -367,8 +364,8 @@ class Player:
                             healthimgs["fh1"], (i * 32 + screen.get_width() - 325, 0)
                         )
                     elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
+                            displayhealth > (i - 1 * 10) + 5
+                            and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["fh2"], (i * 32 + screen.get_width() - 325, 0)
@@ -399,45 +396,44 @@ class Player:
                 self.damage(100)
             if keys[K_LSHIFT] and self.hunger > 0:
                 if self.moving:
-                    self.hunger -= 0.05
-                if self.speed < 5:
+                    self.hunger -= dt_adjusted(0.1)
+                if self.speed < 3.5:
                     self.speed += 0.1
-
             else:
-                if self.speed > 2.5:
+                if self.speed > 2:
                     self.speed -= 0.1
-                elif self.speed < 2.3:
+                elif self.speed < 1.8:
                     self.speed += 0.1
             self.moving = False
             if self.ldt > time.time():
                 self.speed = 1.25
             if keys[pygame.K_w]:
                 if keys[K_a] or keys[K_d]:
-                    self.y += 1.5 * self.speed
+                    self.y += dt_adjusted(1.5) * self.speed
                 else:
-                    self.y += 3 * self.speed
+                    self.y += dt_adjusted(3) * self.speed
                 self.moving = True
                 self.dir = "up"
             if keys[pygame.K_s]:
                 self.dir = "down"
                 if keys[K_a] or keys[K_d]:
-                    self.y -= 1.5 * self.speed
+                    self.y -= dt_adjusted(1.5) * self.speed
                 else:
-                    self.y -= 3 * self.speed
+                    self.y -= dt_adjusted(3) * self.speed
                 self.moving = True
             if keys[pygame.K_a]:
                 self.dir = "left"
                 if keys[K_w] or keys[K_s]:
-                    self.x -= 1.5 * self.speed
+                    self.x -= dt_adjusted(1.5) * self.speed
                 else:
-                    self.x -= 3 * self.speed
+                    self.x -= dt_adjusted(3) * self.speed
                 self.moving = True
             if keys[pygame.K_d]:
                 self.dir = "right"
                 if keys[K_w] or keys[K_s]:
-                    self.x += 1.5 * self.speed
+                    self.x += dt_adjusted(1.5) * self.speed
                 else:
-                    self.x += 3 * self.speed
+                    self.x += dt_adjusted(3) * self.speed
                 self.moving = True
 
     def respawn(self):
@@ -453,16 +449,18 @@ class Player:
 
 
 class Button:
-    def __init__(self, x, y, text):
+    def __init__(self, x, y, text, margins=10):
         self.x = x
         self.y = y
         self.text = font.render(text, False, (255, 255, 255))
-        self.rect = pygame.Rect(
-            self.x - self.text.get_width() / 2 + 5,
-            self.y - self.text.get_height() / 2 + 5,
-            self.text.get_width() + 15,
-            self.text.get_height() + 15,
+        self.margins = margins
+        self.rect = pygame.FRect(
+            self.x - self.text.get_width() / 2 - self.margins / 2,
+            self.y - self.text.get_height() / 2 - self.margins / 2,
+            self.text.get_width() + self.margins,
+            self.text.get_height() + self.margins,
         )
+        print(self.text.get_height())
         self.active = True
         self.pressed = False
 
@@ -470,13 +468,13 @@ class Button:
         self.pressed = False
         if self.active:
             if (
-                self.rect.collidepoint(pygame.mouse.get_pos())
-                and pygame.mouse.get_pressed()[0]
+                    self.rect.collidepoint(pygame.mouse.get_pos())
+                    and pygame.mouse.get_pressed()[0]
             ):
                 self.pressed = True
-                pygame.draw.rect(screen, (140, 140, 220), self.rect)
+                pygame.draw.rect(screen, (140, 140, 255), self.rect)
             elif self.rect.collidepoint(pygame.mouse.get_pos()):
-                pygame.draw.rect(screen, (120, 120, 120), self.rect)
+                pygame.draw.rect(screen, (120, 120, 220), self.rect)
             else:
                 pygame.draw.rect(screen, (80, 80, 80), self.rect)
             screen.blit(
@@ -486,16 +484,21 @@ class Button:
                     self.y - self.text.get_height() / 2 + 5,
                 ),
             )
+            pygame.draw.rect(screen, (40, 40, 40), self.rect, 4)
 
     def setpos(self, x, y):
         self.x = x
         self.y = y
         self.rect = pygame.Rect(
-            self.x - self.text.get_width() / 2,
-            self.y - self.text.get_height() / 2,
-            self.text.get_width(),
-            self.text.get_height(),
+            self.x - self.text.get_width() / 2 - self.margins / 2,
+            self.y - self.text.get_height() / 2 - self.margins / 2,
+            self.text.get_width() + self.margins,
+            self.text.get_height() + self.margins,
         )
+
+
+def dt_adjusted(value):
+    return value / clock.get_fps() * 60
 
 
 tilemap = []
@@ -617,13 +620,14 @@ while True:
         )
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.draw()
-        rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 150)
+        rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 149)
         rsb.draw()
         if quitb.pressed:
             pygame.quit()
             sys.exit()
         if rsb.pressed:
             player.respawn()
-    clock.tick(60)
+    clock.tick()
+    screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
 
     pygame.display.flip()
