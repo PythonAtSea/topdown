@@ -72,6 +72,11 @@ healthimgs = dict(
         pygame.image.load("images/fheart3.png"), SCALE_FACTOR
     ),
 )
+purpimgs = dict(
+    rest=pygame.transform.scale_by(
+        pygame.image.load("images/purpguyrest.png"), SCALE_FACTOR
+    ),
+)
 punch = pygame.mixer.Sound("sounds/punch.ogg")
 
 
@@ -83,8 +88,8 @@ class Tile:
 
     def draw(self):
         if (
-                -64 < self.x - offsetx < screen.get_width()
-                and -64 < self.y + offsety < screen.get_height()
+            -64 < self.x - offsetx < screen.get_width()
+            and -64 < self.y + offsety < screen.get_height()
         ):
             screen.blit(self.img, (self.x - offsetx, self.y + offsety))
 
@@ -96,8 +101,7 @@ class Barrier(Tile):
 
 class Grass(Tile):
     def __init__(
-            self, x, y, up, down, left, right, test, upleft, upright, downleft,
-            downright
+        self, x, y, up, down, left, right, test, upleft, upright, downleft, downright
     ):
         super().__init__(x, y, grassimgs["g"])
         self.up = up
@@ -229,14 +233,31 @@ class Player:
         self.moving = False
         self.ldt = 0
         self.dead = False
-        self.username = "( USERNAME )"
+        self.username = "Filler Username"
         self.deathmessage = ""
         self.deathtypes = {
             "hunger": "{} starved to death".format(self.username),
             "normal": "{} died".format(self.username),
         }
+        self.rect = pygame.Rect(
+            self.x - self.img.get_width() * 2,
+            self.y - self.img.get_height() * 2,
+            self.img.get_width() * 4,
+            self.img.get_height() * 4,
+        )
 
     def draw(self):
+        pygame.draw.rect(
+            screen,
+            (255, 0, 0),
+            self.rect,
+        )
+        self.rect = pygame.Rect(
+            self.x - self.img.get_width() / 2,
+            self.y - self.img.get_height() / 2,
+            self.img.get_width(),
+            self.img.get_height(),
+        )
         if self.hunger <= 0:
             self.hunger = 0
             if self.lhd < time.time():
@@ -306,8 +327,8 @@ class Player:
                             (i * 32 + screen.get_width() - 325, offset),
                         )
                     elif (
-                            displayhealth > (i - 1 * 10) + 5
-                            and displayhealth > (i * 10) - 5
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["h2"],
@@ -327,8 +348,8 @@ class Player:
                             (i * 32 + screen.get_width() - 325, offset),
                         )
                     elif (
-                            displayhealth > (i - 1 * 10) + 5
-                            and displayhealth > (i * 10) - 5
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["fh2"],
@@ -347,8 +368,8 @@ class Player:
                             healthimgs["h1"], (i * 32 + screen.get_width() - 325, 0)
                         )
                     elif (
-                            displayhealth > (i - 1 * 10) + 5
-                            and displayhealth > (i * 10) - 5
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["h2"], (i * 32 + screen.get_width() - 325, 0)
@@ -364,8 +385,8 @@ class Player:
                             healthimgs["fh1"], (i * 32 + screen.get_width() - 325, 0)
                         )
                     elif (
-                            displayhealth > (i - 1 * 10) + 5
-                            and displayhealth > (i * 10) - 5
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
                             healthimgs["fh2"], (i * 32 + screen.get_width() - 325, 0)
@@ -468,8 +489,8 @@ class Button:
         self.pressed = False
         if self.active:
             if (
-                    self.rect.collidepoint(pygame.mouse.get_pos())
-                    and pygame.mouse.get_pressed()[0]
+                self.rect.collidepoint(pygame.mouse.get_pos())
+                and pygame.mouse.get_pressed()[0]
             ):
                 self.pressed = True
                 pygame.draw.rect(screen, (140, 140, 255), self.rect)
@@ -497,7 +518,74 @@ class Button:
         )
 
 
+class Enemy:
+    def __init__(self, imgs, x, y):
+        self.imgs = imgs
+        self.img = self.imgs["rest"]
+        self.x = x
+        self.y = y
+        self.rect = pygame.Rect(
+            self.x + self.img.get_width() / 2,
+            self.y + self.img.get_height() / 2,
+            self.img.get_width(),
+            self.img.get_height(),
+        )
+
+    def draw(self):
+        if (
+            -64 < self.x - offsetx < screen.get_width()
+            and -64 < self.y + offsety < screen.get_height()
+        ):
+            screen.blit(
+                self.img,
+                (
+                    self.x - offsetx - self.img.get_width() / 2,
+                    self.y + offsety - self.img.get_height() / 2,
+                ),
+            )
+        pygame.draw.rect(
+            screen,
+            (0, 255, 0),
+            self.rect,
+        )
+
+    def move(self):
+        if self.x < round(player.x) and abs(self.x - player.x) > 1:
+            for _ in range(3):
+                self.x += dt_adjusted(1)
+                if self.x > round(player.x):
+                    break
+            self.x += dt_adjusted(2)
+        elif self.x > round(player.x) and abs(self.x - player.x) > 1:
+            for _ in range(3):
+                self.x -= dt_adjusted(1)
+                if self.x < round(player.x):
+                    break
+        if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
+            for _ in range(3):
+                self.y -= dt_adjusted(1)
+                if -self.y < round(player.y):
+                    break
+        elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
+            for _ in range(3):
+                self.y += dt_adjusted(1)
+                if -self.y > round(player.y):
+                    break
+        self.x = round(self.x)
+        self.y = round(self.y)
+        if self.rect.colliderect(player.rect):
+            player.damage(20)
+        self.rect = pygame.Rect(
+            self.x - self.img.get_width() / 2,
+            -(self.y - self.img.get_height() / 2),
+            self.img.get_width(),
+            self.img.get_height(),
+        )
+
+
 def dt_adjusted(value):
+    if clock.get_fps() == 0:
+        return 0
     return value / clock.get_fps() * 60
 
 
@@ -585,6 +673,8 @@ offsety = 0
 menu = "Start"
 quitb = Button(screen.get_width() / 2 - 75, screen.get_height() / 2 - 75, "Quit")
 rsb = Button(screen.get_width() / 2 - 75, screen.get_height() / 2 + 75, "Restart")
+te = Enemy(purpimgs, 100, 100)
+te2 = Enemy(purpimgs, 200, 100)
 quitb.active = False
 while True:
     screen.fill((0, 0, 25))
@@ -600,6 +690,9 @@ while True:
         tile.draw()
     player.draw()
     player.move()
+    te.draw()
+    te2.draw()
+    te.move()
     offsetx = int(player.x) - screen.get_width() / 2
     offsety = int(player.y) + screen.get_height() / 2
     if player.dead:
