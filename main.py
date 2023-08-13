@@ -7,9 +7,10 @@ import random
 import math
 
 pygame.init()
-
+DEBUG = False
 screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
 font = pygame.font.Font("fonts/Pixel.ttf", 35)
+font2 = pygame.font.Font("fonts/Pixel.ttf", 50)
 clock = pygame.time.Clock()
 SCALE_FACTOR = 4
 imgs = [
@@ -239,6 +240,8 @@ class Player:
             "hunger": "{} starved to death".format(self.username),
             "normal": "{} died".format(self.username),
         }
+        self.dx = 0
+        self.dy = 0
         self.rect = pygame.Rect(
             self.x - self.img.get_width() * 2,
             self.y - self.img.get_height() * 2,
@@ -247,14 +250,15 @@ class Player:
         )
 
     def draw(self):
-        pygame.draw.rect(
-            screen,
-            (255, 0, 0),
-            self.rect,
-        )
+        if DEBUG:
+            pygame.draw.rect(
+                screen,
+                (255, 0, 0),
+                self.rect,
+            )
         self.rect = pygame.Rect(
             self.x - self.img.get_width() / 2,
-            self.y - self.img.get_height() / 2,
+            self.y + self.img.get_height() / 2,
             self.img.get_width(),
             self.img.get_height(),
         )
@@ -266,28 +270,28 @@ class Player:
         if self.dir == "down" and not self.moving:
             self.img = self.imgs["down"]
         elif self.dir == "down" and self.moving:
-            if time.time() % 0.4 < 0.2:
+            if time.time() % 0.4 < 0.2 and not game_paused:
                 self.img = self.imgs["down1"]
             else:
                 self.img = self.imgs["down2"]
         elif self.dir == "left" and not self.moving:
             self.img = self.imgs["left"]
         elif self.dir == "left" and self.moving:
-            if time.time() % 0.4 < 0.2:
+            if time.time() % 0.4 < 0.2 and not game_paused:
                 self.img = self.imgs["left"]
             else:
                 self.img = self.imgs["pl1"]
         elif self.dir == "right" and not self.moving:
             self.img = self.imgs["right"]
         elif self.dir == "right" and self.moving:
-            if time.time() % 0.4 < 0.2:
+            if time.time() % 0.4 < 0.2 and not game_paused:
                 self.img = self.imgs["right"]
             else:
                 self.img = self.imgs["pr1"]
         elif self.dir == "up" and not self.moving:
             self.img = self.imgs["up"]
         elif self.dir == "up" and self.moving:
-            if time.time() % 0.4 < 0.2:
+            if time.time() % 0.4 < 0.2 and not game_paused:
                 self.img = self.imgs["u1"]
             else:
                 self.img = self.imgs["u2"]
@@ -397,13 +401,31 @@ class Player:
                         )
 
     def damage(self, amount, damagetype="normal"):
-        if self.health > 0:
+        if self.health > 0 and self.ldt < time.time() and not game_paused:
             punch.play()
             self.health -= amount
-            self.ldt = time.time() + 0.2
+            self.ldt = time.time() + 0.4
             self.deathmessage = self.deathtypes[damagetype]
+            return True
+        else:
+            return False
 
     def move(self):
+        if not game_paused:
+            self.x += self.dx
+            self.y += self.dy
+        if self.dx > 0:
+            self.dx -= dt_adjusted(1)
+        elif self.dx < 0:
+            self.dx += dt_adjusted(1)
+        if self.dy > 0:
+            self.dy -= dt_adjusted(1)
+        elif self.dy < 0:
+            self.dy += dt_adjusted(1)
+        if 1 > self.dx > -1:
+            self.dx = 0
+        if 1 > self.dy > -1:
+            self.dy = 0
         if self.health <= 0:
             self.dead = True
             self.hunger = 0
@@ -412,7 +434,7 @@ class Player:
             self.img = pygame.transform.scale_by(
                 pygame.image.load("images/pd.png"), SCALE_FACTOR
             )
-        if not self.dead:
+        if not self.dead and not game_paused:
             if keys[K_k]:
                 self.damage(100)
             if keys[K_LSHIFT] and self.hunger > 0:
@@ -481,7 +503,7 @@ class Button:
             self.text.get_width() + self.margins,
             self.text.get_height() + self.margins,
         )
-        print(self.text.get_height())
+        self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         self.active = True
         self.pressed = False
 
@@ -493,19 +515,31 @@ class Button:
                 and pygame.mouse.get_pressed()[0]
             ):
                 self.pressed = True
-                pygame.draw.rect(screen, (140, 140, 255), self.rect)
+                pygame.draw.rect(
+                    self.surf,
+                    (255, 255, 255, 200),
+                    (0, 0, self.rect.width, self.rect.height),
+                )
             elif self.rect.collidepoint(pygame.mouse.get_pos()):
-                pygame.draw.rect(screen, (120, 120, 220), self.rect)
+                pygame.draw.rect(
+                    self.surf,
+                    (255, 255, 255, 100),
+                    (0, 0, self.rect.width, self.rect.height),
+                )
             else:
-                pygame.draw.rect(screen, (80, 80, 80), self.rect)
-            screen.blit(
+                pygame.draw.rect(
+                    self.surf,
+                    (255, 255, 255, 0),
+                    (0, 0, self.rect.width, self.rect.height),
+                )
+            self.surf.blit(
                 self.text,
                 (
-                    self.x - self.text.get_width() / 2 + 5,
-                    self.y - self.text.get_height() / 2 + 5,
+                    self.rect.width / 2 - self.text.get_width() / 2,
+                    self.rect.height / 2 - self.text.get_height() / 2,
                 ),
             )
-            pygame.draw.rect(screen, (40, 40, 40), self.rect, 4)
+            screen.blit(self.surf, (self.rect.x, self.rect.y))
 
     def setpos(self, x, y):
         self.x = x
@@ -530,6 +564,7 @@ class Enemy:
             self.img.get_width(),
             self.img.get_height(),
         )
+        self.discoverdead = False
 
     def draw(self):
         if (
@@ -543,55 +578,187 @@ class Enemy:
                     self.y + offsety - self.img.get_height() / 2,
                 ),
             )
-        pygame.draw.rect(
-            screen,
-            (0, 255, 0),
-            self.rect,
-        )
+        if DEBUG:
+            pygame.draw.rect(
+                screen,
+                (0, 255, 0),
+                self.rect,
+            )
 
     def move(self):
-        if self.x < round(player.x) and abs(self.x - player.x) > 1:
-            for _ in range(3):
-                self.x += dt_adjusted(1)
-                if self.x > round(player.x):
-                    break
-            self.x += dt_adjusted(2)
-        elif self.x > round(player.x) and abs(self.x - player.x) > 1:
-            for _ in range(3):
-                self.x -= dt_adjusted(1)
-                if self.x < round(player.x):
-                    break
-        if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
-            for _ in range(3):
-                self.y -= dt_adjusted(1)
-                if -self.y < round(player.y):
-                    break
-        elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
-            for _ in range(3):
-                self.y += dt_adjusted(1)
-                if -self.y > round(player.y):
-                    break
+        if not player.dead:
+            self.discoverdead = False
+        if not self.discoverdead:
+            if self.x < round(player.x) and abs(self.x - player.x) > 1:
+                for _ in range(3):
+                    self.x += dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.x -= dt_adjusted(1)
+                            break
+                    if self.x > round(player.x):
+                        break
+            elif self.x > round(player.x) and abs(self.x - player.x) > 1:
+                for _ in range(3):
+                    self.x -= dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.x += dt_adjusted(1)
+                            break
+                    if self.x < round(player.x):
+                        break
+            if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
+                for _ in range(3):
+                    self.y -= dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.y += dt_adjusted(1)
+                            break
+                    if -self.y < round(player.y):
+                        break
+            elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
+                for _ in range(3):
+                    self.y += dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.y -= dt_adjusted(1)
+                            break
+                    if -self.y > round(player.y):
+                        break
+        else:
+            if self.x < round(player.x) and abs(self.x - player.x) > 1:
+                for _ in range(3):
+                    self.x -= dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.x += dt_adjusted(1)
+                            break
+                    if self.x > round(player.x):
+                        break
+            elif self.x > round(player.x) and abs(self.x - player.x) > 1:
+                for _ in range(3):
+                    self.x += dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.x -= dt_adjusted(1)
+                            break
+                    if self.x < round(player.x):
+                        break
+            if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
+                for _ in range(3):
+                    self.y += dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.y -= dt_adjusted(1)
+                            break
+                    if -self.y < round(player.y):
+                        break
+            elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
+                for _ in range(3):
+                    self.y -= dt_adjusted(1)
+                    self.rect = pygame.Rect(
+                        self.x - self.img.get_width() / 2,
+                        -(self.y - self.img.get_height() / 2),
+                        self.img.get_width(),
+                        self.img.get_height(),
+                    )
+                    for enemy in enemys:
+                        if enemy != self and self.rect.colliderect(enemy.rect):
+                            self.y += dt_adjusted(1)
+                            break
+                    if -self.y > round(player.y):
+                        break
         self.x = round(self.x)
         self.y = round(self.y)
         if self.rect.colliderect(player.rect):
-            player.damage(20)
-        self.rect = pygame.Rect(
-            self.x - self.img.get_width() / 2,
-            -(self.y - self.img.get_height() / 2),
-            self.img.get_width(),
-            self.img.get_height(),
-        )
+            if player.dead:
+                self.discoverdead = True
+            if player.damage(20):
+                dx = player.x - self.x
+                dy = player.y + self.y
+                distance = math.sqrt(dx**2 + dy**2)
+                dx /= distance
+                dy /= distance
+
+                player.dx += dx * 10
+                player.dy += dy * 10
+        for enemy in enemys:
+            if enemy != self and self.rect.colliderect(enemy.rect):
+                if self.x < enemy.x:
+                    self.x -= dt_adjusted(1)
+                elif self.x > enemy.x:
+                    self.x += dt_adjusted(1)
+                if self.y < enemy.y:
+                    self.y -= dt_adjusted(1)
+                elif self.y > enemy.y:
+                    self.y += dt_adjusted(1)
+                self.x = round(self.x)
+                self.y = round(self.y)
+                self.rect = pygame.Rect(
+                    self.x - self.img.get_width() / 2,
+                    -(self.y - self.img.get_height() / 2),
+                    self.img.get_width(),
+                    self.img.get_height(),
+                )
+
+
+game_paused = True
 
 
 def dt_adjusted(value):
-    if clock.get_fps() == 0:
+    if clock.get_fps() == 0 or game_paused:
         return 0
     return value / clock.get_fps() * 60
 
 
 tilemap = []
 tiles = []
-noise = PerlinNoise(octaves=1, seed=random.randint(-1125899906842624, 1125899906842624))
+SEED = 1
+if not SEED:
+    seed = random.randint(-1125899906842624, 1125899906842624)
+noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
 for i in range(100):
     tilemap.append([])
@@ -671,37 +838,54 @@ for i in tilemap:
 offsetx = 0
 offsety = 0
 menu = "Start"
-quitb = Button(screen.get_width() / 2 - 75, screen.get_height() / 2 - 75, "Quit")
-rsb = Button(screen.get_width() / 2 - 75, screen.get_height() / 2 + 75, "Restart")
-te = Enemy(purpimgs, 100, 100)
-te2 = Enemy(purpimgs, 200, 100)
+quitb = Button(screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit")
+rsb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Restart")
+resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
+enemys = []
+for i in range(10):
+    enemys.append(Enemy(purpimgs, i * 100, 50))
 quitb.active = False
+resumeb.active = False
+deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
+deadsurf.fill((255, 0, 0, 100))
+pausesurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
+pausesurf.fill((0, 0, 0, 100))
 while True:
     screen.fill((0, 0, 25))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == pygame.VIDEORESIZE:
+            deadsurf = pygame.Surface(
+                (screen.get_width(), screen.get_height())
+            ).convert_alpha()
+            deadsurf.fill((255, 0, 0, 100))
+            pausesurf = pygame.Surface(
+                (screen.get_width(), screen.get_height())
+            ).convert_alpha()
+            pausesurf.fill((0, 0, 0, 100))
+    if quitb.pressed:
+        pygame.quit()
+        sys.exit()
     keys = pygame.key.get_pressed()
     if keys[K_q]:
         pygame.quit()
         sys.exit()
+    if keys[K_p] and not player.dead:
+        game_paused = True
     for tile in tiles:
         tile.draw()
     player.draw()
     player.move()
-    te.draw()
-    te2.draw()
-    te.move()
+    for enemy in enemys:
+        enemy.draw()
+        enemy.move()
     offsetx = int(player.x) - screen.get_width() / 2
     offsety = int(player.y) + screen.get_height() / 2
     if player.dead:
         quitb.active = True
         rsb.active = True
-        deadsurf = pygame.Surface(
-            (screen.get_width(), screen.get_height())
-        ).convert_alpha()
-        deadsurf.fill((255, 0, 0, 100))
         screen.blit(deadsurf, (0, 0))
         txt = font.render(player.deathmessage, False, (255, 255, 255))
         screen.blit(
@@ -713,13 +897,28 @@ while True:
         )
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.draw()
-        rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 149)
+        rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
         rsb.draw()
-        if quitb.pressed:
-            pygame.quit()
-            sys.exit()
         if rsb.pressed:
             player.respawn()
+    if game_paused:
+        quitb.active = True
+        resumeb.active = True
+        screen.blit(pausesurf, (0, 0))
+        quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
+        quitb.draw()
+        resumeb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
+        resumeb.draw()
+        txt = font2.render("Paused", False, (255, 255, 255))
+        screen.blit(
+            txt,
+            (
+                screen.get_width() / 2 - txt.get_width() / 2,
+                screen.get_height() / 2 - txt.get_height() / 2,
+            ),
+        )
+        if resumeb.pressed:
+            game_paused = False
     clock.tick()
     screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
 
