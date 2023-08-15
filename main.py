@@ -12,6 +12,8 @@ screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
 font = pygame.font.Font("fonts/Pixel.ttf", 35)
 font2 = pygame.font.Font("fonts/Pixel.ttf", 50)
 clock = pygame.time.Clock()
+onsound = pygame.mixer.Sound("sounds/on.wav")
+offsound = pygame.mixer.Sound("sounds/off.wav")
 SCALE_FACTOR = 4
 imgs = [
     pygame.transform.scale_by(pygame.image.load("images/w.png"), SCALE_FACTOR),
@@ -77,8 +79,11 @@ purpimgs = dict(
     rest=pygame.transform.scale_by(
         pygame.image.load("images/purpguyrest.png"), SCALE_FACTOR
     ),
+    d1=pygame.transform.scale_by(pygame.image.load("images/pgd1.png"), SCALE_FACTOR),
+    d2=pygame.transform.scale_by(pygame.image.load("images/pgd2.png"), SCALE_FACTOR),
 )
 punch = pygame.mixer.Sound("sounds/punch.ogg")
+punch.set_volume(0.4)
 
 
 class Tile:
@@ -506,9 +511,27 @@ class Button:
         self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         self.active = True
         self.pressed = False
+        self.activated = False
 
     def draw(self):
-        self.pressed = False
+        if (
+            not self.pressed
+            and self.rect.collidepoint(pygame.mouse.get_pos())
+            and pygame.mouse.get_pressed()[0]
+            and self.active
+            and not self.activated
+        ):
+            onsound.play()
+        if self.pressed and (
+            not pygame.mouse.get_pressed()[0]
+            or not self.rect.collidepoint(pygame.mouse.get_pos())
+        ):
+            offsound.play()
+            self.pressed = False
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.activated = True
+        elif self.activated:
+            self.activated = False
         if self.active:
             if (
                 self.rect.collidepoint(pygame.mouse.get_pos())
@@ -564,6 +587,7 @@ class Enemy:
             self.img.get_width(),
             self.img.get_height(),
         )
+        self.resting = True
         self.discoverdead = False
 
     def draw(self):
@@ -571,8 +595,14 @@ class Enemy:
             -64 < self.x - offsetx < screen.get_width()
             and -64 < self.y + offsety < screen.get_height()
         ):
+            if self.resting:
+                img = self.imgs["rest"]
+            elif time.time() % 0.4 < 0.2:
+                img = self.imgs["d1"]
+            else:
+                img = self.imgs["d2"]
             screen.blit(
-                self.img,
+                img,
                 (
                     self.x - offsetx - self.img.get_width() / 2,
                     self.y + offsety - self.img.get_height() / 2,
@@ -585,7 +615,17 @@ class Enemy:
                 self.rect,
             )
 
+    def update_rect(self):
+        self.rect = pygame.Rect(
+            self.x - self.img.get_width() / 2,
+            -(self.y - self.img.get_height() / 2),
+            self.img.get_width(),
+            self.img.get_height(),
+        )
+
     def move(self):
+        x = round(self.x)
+        y = round(self.y)
         if not player.dead:
             self.discoverdead = False
         if not self.discoverdead:
@@ -600,7 +640,8 @@ class Enemy:
                     )
                     for enemy in enemys:
                         if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.x -= dt_adjusted(1)
+                            self.x -= dt_adjusted(0.5)
+                            enemy.x += dt_adjusted(0.5)
                             break
                     if self.x > round(player.x):
                         break
@@ -615,7 +656,8 @@ class Enemy:
                     )
                     for enemy in enemys:
                         if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.x += dt_adjusted(1)
+                            self.x += dt_adjusted(0.5)
+                            enemy.x -= dt_adjusted(0.5)
                             break
                     if self.x < round(player.x):
                         break
@@ -630,7 +672,8 @@ class Enemy:
                     )
                     for enemy in enemys:
                         if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.y += dt_adjusted(1)
+                            self.y += dt_adjusted(0.5)
+                            enemy.y -= dt_adjusted(0.5)
                             break
                     if -self.y < round(player.y):
                         break
@@ -645,7 +688,8 @@ class Enemy:
                     )
                     for enemy in enemys:
                         if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.y -= dt_adjusted(1)
+                            self.y -= dt_adjusted(0.5)
+                            enemy.y += dt_adjusted(0.5)
                             break
                     if -self.y > round(player.y):
                         break
@@ -724,6 +768,7 @@ class Enemy:
 
                 player.dx += dx * 10
                 player.dy += dy * 10
+
         for enemy in enemys:
             if enemy != self and self.rect.colliderect(enemy.rect):
                 if self.x < enemy.x:
@@ -742,6 +787,10 @@ class Enemy:
                     self.img.get_width(),
                     self.img.get_height(),
                 )
+        if x == self.x and y == self.y:
+            self.resting = True
+        else:
+            self.resting = False
 
 
 game_paused = True
@@ -846,13 +895,15 @@ for i in range(10):
     enemys.append(Enemy(purpimgs, i * 100, 50))
 quitb.active = False
 resumeb.active = False
+pygame.key.set_repeat(200, 25)
 deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
 deadsurf.fill((255, 0, 0, 100))
 pausesurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
 pausesurf.fill((0, 0, 0, 100))
 while True:
     screen.fill((0, 0, 25))
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -865,7 +916,7 @@ while True:
                 (screen.get_width(), screen.get_height())
             ).convert_alpha()
             pausesurf.fill((0, 0, 0, 100))
-    if quitb.pressed:
+    if quitb.activated:
         pygame.quit()
         sys.exit()
     keys = pygame.key.get_pressed()
@@ -899,7 +950,7 @@ while True:
         quitb.draw()
         rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
         rsb.draw()
-        if rsb.pressed:
+        if rsb.activated:
             player.respawn()
     if game_paused:
         quitb.active = True
@@ -917,7 +968,7 @@ while True:
                 screen.get_height() / 2 - txt.get_height() / 2,
             ),
         )
-        if resumeb.pressed:
+        if resumeb.activated:
             game_paused = False
     clock.tick()
     screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
