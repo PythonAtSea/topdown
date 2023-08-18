@@ -84,6 +84,15 @@ purpimgs = dict(
 )
 punch = pygame.mixer.Sound("sounds/punch.ogg")
 punch.set_volume(0.4)
+keybinds = {
+    "up": K_w,
+    "down": K_s,
+    "left": K_a,
+    "right": K_d,
+    "sprint": K_LSHIFT,
+    "kill": K_k,
+    "pause": K_ESCAPE,
+}
 
 
 class Tile:
@@ -242,8 +251,9 @@ class Player:
         self.username = "Filler Username"
         self.deathmessage = ""
         self.deathtypes = {
-            "hunger": "{} starved to death".format(self.username),
-            "normal": "{} died".format(self.username),
+            "hunger": "{} starved to death",
+            "normal": "{} died",
+            "slain": "{} was slain by {}",
         }
         self.dx = 0
         self.dy = 0
@@ -405,12 +415,14 @@ class Player:
                             healthimgs["fh3"], (i * 32 + screen.get_width() - 325, 0)
                         )
 
-    def damage(self, amount, damagetype="normal"):
+    def damage(self, amount, damagetype="normal", secondary=""):
         if self.health > 0 and self.ldt < time.time() and not game_paused:
             punch.play()
             self.health -= amount
             self.ldt = time.time() + 0.4
-            self.deathmessage = self.deathtypes[damagetype]
+            self.deathmessage = self.deathtypes[damagetype].format(
+                self.username, secondary
+            )
             return True
         else:
             return False
@@ -439,10 +451,14 @@ class Player:
             self.img = pygame.transform.scale_by(
                 pygame.image.load("images/pd.png"), SCALE_FACTOR
             )
+        if self.x < 0:
+            self.x = 0
+        if self.y > 0:
+            self.y = 0
         if not self.dead and not game_paused:
-            if keys[K_k]:
+            if keys[keybinds["kill"]]:
                 self.damage(100)
-            if keys[K_LSHIFT] and self.hunger > 0:
+            if keys[keybinds["sprint"]] and self.hunger > 0:
                 if self.moving:
                     self.hunger -= dt_adjusted(0.1)
                 if self.speed < 3.5:
@@ -455,30 +471,30 @@ class Player:
             self.moving = False
             if self.ldt > time.time():
                 self.speed = 1.25
-            if keys[pygame.K_w]:
-                if keys[K_a] or keys[K_d]:
+            if keys[keybinds["up"]]:
+                if keys[keybinds["left"]] or keys[keybinds["right"]]:
                     self.y += dt_adjusted(1.5) * self.speed
                 else:
                     self.y += dt_adjusted(3) * self.speed
                 self.moving = True
                 self.dir = "up"
-            if keys[pygame.K_s]:
+            if keys[keybinds["down"]]:
                 self.dir = "down"
-                if keys[K_a] or keys[K_d]:
+                if keys[keybinds["left"]] or keys[keybinds["right"]]:
                     self.y -= dt_adjusted(1.5) * self.speed
                 else:
                     self.y -= dt_adjusted(3) * self.speed
                 self.moving = True
-            if keys[pygame.K_a]:
+            if keys[keybinds["left"]]:
                 self.dir = "left"
-                if keys[K_w] or keys[K_s]:
+                if keys[keybinds["up"]] or keys[keybinds["down"]]:
                     self.x -= dt_adjusted(1.5) * self.speed
                 else:
                     self.x -= dt_adjusted(3) * self.speed
                 self.moving = True
-            if keys[pygame.K_d]:
+            if keys[keybinds["right"]]:
                 self.dir = "right"
-                if keys[K_w] or keys[K_s]:
+                if keys[keybinds["up"]] or keys[keybinds["down"]]:
                     self.x += dt_adjusted(1.5) * self.speed
                 else:
                     self.x += dt_adjusted(3) * self.speed
@@ -574,6 +590,15 @@ class Button:
             self.text.get_height() + self.margins,
         )
 
+    def update_rect(self):
+        self.rect = pygame.FRect(
+            self.x - self.text.get_width() / 2 - self.margins / 2,
+            self.y - self.text.get_height() / 2 - self.margins / 2,
+            self.text.get_width() + self.margins,
+            self.text.get_height() + self.margins,
+        )
+        self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+
 
 class Enemy:
     def __init__(self, imgs, x, y):
@@ -591,6 +616,7 @@ class Enemy:
         self.discoverdead = False
 
     def draw(self):
+        distance = math.dist((self.x, self.y), (player.x, player.y))
         if (
             -64 < self.x - offsetx < screen.get_width()
             and -64 < self.y + offsety < screen.get_height()
@@ -608,6 +634,18 @@ class Enemy:
                     self.y + offsety - self.img.get_height() / 2,
                 ),
             )
+            if DEBUG:
+                screen.blit(
+                    font.render(
+                        str(round(distance)),
+                        False,
+                        (255, 255, 255),
+                    ),
+                    (
+                        self.x - offsetx - self.img.get_width() / 2,
+                        self.y + offsety - self.img.get_height() / 2,
+                    ),
+                )
         if DEBUG:
             pygame.draw.rect(
                 screen,
@@ -628,138 +666,140 @@ class Enemy:
         y = round(self.y)
         if not player.dead:
             self.discoverdead = False
-        if not self.discoverdead:
-            if self.x < round(player.x) and abs(self.x - player.x) > 1:
-                for _ in range(3):
-                    self.x += dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.x -= dt_adjusted(0.5)
-                            enemy.x += dt_adjusted(0.5)
+        distance = math.dist((self.x, self.y), (player.x, player.y))
+        if distance < 400:
+            if not self.discoverdead:
+                if self.x < round(player.x) and abs(self.x - player.x) > 1:
+                    for _ in range(3):
+                        self.x += dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.x -= dt_adjusted(0.5)
+                                enemy.x += dt_adjusted(0.5)
+                                break
+                        if self.x > round(player.x):
                             break
-                    if self.x > round(player.x):
-                        break
-            elif self.x > round(player.x) and abs(self.x - player.x) > 1:
-                for _ in range(3):
-                    self.x -= dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.x += dt_adjusted(0.5)
-                            enemy.x -= dt_adjusted(0.5)
+                elif self.x > round(player.x) and abs(self.x - player.x) > 1:
+                    for _ in range(3):
+                        self.x -= dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.x += dt_adjusted(0.5)
+                                enemy.x -= dt_adjusted(0.5)
+                                break
+                        if self.x < round(player.x):
                             break
-                    if self.x < round(player.x):
-                        break
-            if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
-                for _ in range(3):
-                    self.y -= dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.y += dt_adjusted(0.5)
-                            enemy.y -= dt_adjusted(0.5)
+                if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
+                    for _ in range(3):
+                        self.y -= dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.y += dt_adjusted(0.5)
+                                enemy.y -= dt_adjusted(0.5)
+                                break
+                        if -self.y < round(player.y):
                             break
-                    if -self.y < round(player.y):
-                        break
-            elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
-                for _ in range(3):
-                    self.y += dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.y -= dt_adjusted(0.5)
-                            enemy.y += dt_adjusted(0.5)
+                elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
+                    for _ in range(3):
+                        self.y += dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.y -= dt_adjusted(0.5)
+                                enemy.y += dt_adjusted(0.5)
+                                break
+                        if -self.y > round(player.y):
                             break
-                    if -self.y > round(player.y):
-                        break
-        else:
-            if self.x < round(player.x) and abs(self.x - player.x) > 1:
-                for _ in range(3):
-                    self.x -= dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.x += dt_adjusted(1)
+            else:
+                if self.x < round(player.x) and abs(self.x - player.x) > 1:
+                    for _ in range(3):
+                        self.x -= dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.x += dt_adjusted(1)
+                                break
+                        if self.x > round(player.x):
                             break
-                    if self.x > round(player.x):
-                        break
-            elif self.x > round(player.x) and abs(self.x - player.x) > 1:
-                for _ in range(3):
-                    self.x += dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.x -= dt_adjusted(1)
+                elif self.x > round(player.x) and abs(self.x - player.x) > 1:
+                    for _ in range(3):
+                        self.x += dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.x -= dt_adjusted(1)
+                                break
+                        if self.x < round(player.x):
                             break
-                    if self.x < round(player.x):
-                        break
-            if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
-                for _ in range(3):
-                    self.y += dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.y -= dt_adjusted(1)
+                if -self.y < round(player.y) and abs(-self.y - player.y) > 1:
+                    for _ in range(3):
+                        self.y += dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.y -= dt_adjusted(1)
+                                break
+                        if -self.y < round(player.y):
                             break
-                    if -self.y < round(player.y):
-                        break
-            elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
-                for _ in range(3):
-                    self.y -= dt_adjusted(1)
-                    self.rect = pygame.Rect(
-                        self.x - self.img.get_width() / 2,
-                        -(self.y - self.img.get_height() / 2),
-                        self.img.get_width(),
-                        self.img.get_height(),
-                    )
-                    for enemy in enemys:
-                        if enemy != self and self.rect.colliderect(enemy.rect):
-                            self.y += dt_adjusted(1)
+                elif -self.y > round(player.y) and abs(-self.y - player.y) > 1:
+                    for _ in range(3):
+                        self.y -= dt_adjusted(1)
+                        self.rect = pygame.Rect(
+                            self.x - self.img.get_width() / 2,
+                            -(self.y - self.img.get_height() / 2),
+                            self.img.get_width(),
+                            self.img.get_height(),
+                        )
+                        for enemy in enemys:
+                            if enemy != self and self.rect.colliderect(enemy.rect):
+                                self.y += dt_adjusted(1)
+                                break
+                        if -self.y > round(player.y):
                             break
-                    if -self.y > round(player.y):
-                        break
         self.x = round(self.x)
         self.y = round(self.y)
         if self.rect.colliderect(player.rect):
             if player.dead:
                 self.discoverdead = True
-            if player.damage(20):
+            if player.damage(20, "slain", "a zombie"):
                 dx = player.x - self.x
                 dy = player.y + self.y
                 distance = math.sqrt(dx**2 + dy**2)
@@ -890,11 +930,15 @@ menu = "Start"
 quitb = Button(screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit")
 rsb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Restart")
 resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
+debugb = Button(
+    screen.get_width() / 2, screen.get_height() / 2 - 160, "Debug Mode (OFF)"
+)
 enemys = []
 for i in range(10):
     enemys.append(Enemy(purpimgs, i * 100, 50))
 quitb.active = False
 resumeb.active = False
+debugb.active = False
 pygame.key.set_repeat(200, 25)
 deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
 deadsurf.fill((255, 0, 0, 100))
@@ -955,11 +999,14 @@ while True:
     if game_paused:
         quitb.active = True
         resumeb.active = True
+        debugb.active = True
         screen.blit(pausesurf, (0, 0))
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.draw()
         resumeb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
         resumeb.draw()
+        debugb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 208)
+        debugb.draw()
         txt = font2.render("Paused", False, (255, 255, 255))
         screen.blit(
             txt,
@@ -970,6 +1017,17 @@ while True:
         )
         if resumeb.activated:
             game_paused = False
+        if debugb.activated:
+            if DEBUG:
+                debugb.text.fill((0, 0, 0, 0))
+                debugb.text = font.render("Debug Mode (OFF)", False, (255, 255, 255))
+                debugb.update_rect()
+                DEBUG = False
+            else:
+                debugb.text.fill((0, 0, 0, 0))
+                debugb.text = font.render("Debug Mode (ON)", False, (255, 255, 255))
+                debugb.update_rect()
+                DEBUG = True
     clock.tick()
     screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
 
