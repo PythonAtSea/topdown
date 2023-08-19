@@ -6,6 +6,9 @@ import time
 import random
 import math
 
+grass_offset_x = 0
+grass_offset_y = 0
+
 pygame.init()
 DEBUG = False
 screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
@@ -968,6 +971,12 @@ while True:
         pygame.quit()
         sys.exit()
     if menu == "Start":
+        grass_offset_x += 1
+        grass_offset_y += 1
+        if grass_offset_x >= grassimgs["g"].get_width():
+            grass_offset_x = 0
+        if grass_offset_y >= grassimgs["g"].get_height():
+            grass_offset_y = 0
         quitb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.update_rect()
@@ -982,7 +991,7 @@ while True:
         # Draw a matrix of the image "grassimgs["g"]"
         for i in range(0, screen.get_width(), grassimgs["g"].get_width()):
             for j in range(0, screen.get_height(), grassimgs["g"].get_height()):
-                screen.blit(grassimgs["g"], (i, j))
+                screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
     elif menu == "Game":
         if keys[K_p] and not player.dead:
             game_paused = True
