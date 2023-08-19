@@ -978,6 +978,13 @@ while True:
         pygame.draw.rect(screen, (255, 255, 255), (0, 0, 100, 100))
         if keys[K_p]:
             menu = "Game"
+        # Draw the title "Topdown"
+        title_surface = font.render("Topdown", False, (255, 255, 255))
+        screen.blit(title_surface, (screen.get_width() / 2 - title_surface.get_width() / 2, screen.get_height() / 2 - title_surface.get_height() / 2))
+        # Draw a matrix of the image "grassimgs["g"]"
+        for i in range(0, screen.get_width(), grassimgs["g"].get_width()):
+            for j in range(0, screen.get_height(), grassimgs["g"].get_height()):
+                screen.blit(grassimgs["g"], (i, j))
     elif menu == "Game":
         if keys[K_p] and not player.dead:
             game_paused = True
