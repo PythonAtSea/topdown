@@ -967,67 +967,79 @@ while True:
     if keys[K_q]:
         pygame.quit()
         sys.exit()
-    if keys[K_p] and not player.dead:
-        game_paused = True
-    for tile in tiles:
-        tile.draw()
-    player.draw()
-    player.move()
-    for enemy in enemys:
-        enemy.draw()
-        enemy.move()
-    offsetx = int(player.x) - screen.get_width() / 2
-    offsety = int(player.y) + screen.get_height() / 2
-    if player.dead:
+    if menu == "Start":
         quitb.active = True
-        rsb.active = True
-        screen.blit(deadsurf, (0, 0))
-        txt = font.render(player.deathmessage, False, (255, 255, 255))
-        screen.blit(
-            txt,
-            (
-                screen.get_width() / 2 - txt.get_width() / 2,
-                screen.get_height() / 2 - 100,
-            ),
-        )
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
+        quitb.update_rect()
         quitb.draw()
-        rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
-        rsb.draw()
-        if rsb.activated:
-            player.respawn()
-    if game_paused:
-        quitb.active = True
-        resumeb.active = True
-        debugb.active = True
-        screen.blit(pausesurf, (0, 0))
-        quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
-        quitb.draw()
-        resumeb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
-        resumeb.draw()
-        debugb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 208)
         debugb.draw()
-        txt = font2.render("Paused", False, (255, 255, 255))
-        screen.blit(
-            txt,
-            (
-                screen.get_width() / 2 - txt.get_width() / 2,
-                screen.get_height() / 2 - txt.get_height() / 2,
-            ),
-        )
-        if resumeb.activated:
-            game_paused = False
-        if debugb.activated:
-            if DEBUG:
-                debugb.text.fill((0, 0, 0, 0))
-                debugb.text = font.render("Debug Mode (OFF)", False, (255, 255, 255))
-                debugb.update_rect()
-                DEBUG = False
-            else:
-                debugb.text.fill((0, 0, 0, 0))
-                debugb.text = font.render("Debug Mode (ON)", False, (255, 255, 255))
-                debugb.update_rect()
-                DEBUG = True
+        pygame.draw.rect(screen, (255, 255, 255), (0, 0, 100, 100))
+        if keys[K_p]:
+            menu = "Game"
+    elif menu == "Game":
+        if keys[K_p] and not player.dead:
+            game_paused = True
+        for tile in tiles:
+            tile.draw()
+        player.draw()
+        player.move()
+        for enemy in enemys:
+            enemy.draw()
+            enemy.move()
+        offsetx = int(player.x) - screen.get_width() / 2
+        offsety = int(player.y) + screen.get_height() / 2
+        if player.dead:
+            quitb.active = True
+            rsb.active = True
+            screen.blit(deadsurf, (0, 0))
+            txt = font.render(player.deathmessage, False, (255, 255, 255))
+            screen.blit(
+                txt,
+                (
+                    screen.get_width() / 2 - txt.get_width() / 2,
+                    screen.get_height() / 2 - 100,
+                ),
+            )
+            quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
+            quitb.draw()
+            rsb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
+            rsb.draw()
+            if rsb.activated:
+                player.respawn()
+        if game_paused:
+            quitb.active = True
+            resumeb.active = True
+            debugb.active = True
+            screen.blit(pausesurf, (0, 0))
+            quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
+            quitb.draw()
+            resumeb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
+            resumeb.draw()
+            debugb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 208)
+            debugb.draw()
+            txt = font2.render("Paused", False, (255, 255, 255))
+            screen.blit(
+                txt,
+                (
+                    screen.get_width() / 2 - txt.get_width() / 2,
+                    screen.get_height() / 2 - txt.get_height() / 2,
+                ),
+            )
+            if resumeb.activated:
+                game_paused = False
+            if debugb.activated:
+                if DEBUG:
+                    debugb.text.fill((0, 0, 0, 0))
+                    debugb.text = font.render(
+                        "Debug Mode (OFF)", False, (255, 255, 255)
+                    )
+                    debugb.update_rect()
+                    DEBUG = False
+                else:
+                    debugb.text.fill((0, 0, 0, 0))
+                    debugb.text = font.render("Debug Mode (ON)", False, (255, 255, 255))
+                    debugb.update_rect()
+                    DEBUG = True
     clock.tick()
     screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
 
