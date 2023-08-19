@@ -847,8 +847,10 @@ def dt_adjusted(value):
 
 
 tilemap = []
-tiles = []
-SEED = 1
+game_paused = True
+SEED = None
+seed_input = ""
+seed_input_active = True
 if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
 noise = PerlinNoise(octaves=1, seed=SEED)
@@ -964,6 +966,17 @@ while True:
                 (screen.get_width(), screen.get_height())
             ).convert_alpha()
             pausesurf.fill((0, 0, 0, 100))
+        elif event.type == pygame.KEYDOWN and seed_input_active:
+            if event.key == pygame.K_RETURN:
+                try:
+                    SEED = int(seed_input)
+                    seed_input_active = False
+                    noise = PerlinNoise(octaves=1, seed=SEED)
+                except ValueError:
+                    print("Invalid seed. Please enter a number.")
+                    seed_input = ""
+            else:
+                seed_input += pygame.key.name(event.key)
     if quitb.activated:
         pygame.quit()
         sys.exit()
@@ -1004,6 +1017,11 @@ while True:
                 screen.get_height() / 2 - title_surface.get_height() / 2,
             ),
         )
+        # Draw the seed input box
+        if seed_input_active:
+            seed_input_surface = font.render("Seed: " + seed_input, False, (255, 255, 255))
+            pygame.draw.rect(screen, (0, 0, 0), (10, 10, 200, 50))
+            screen.blit(seed_input_surface, (20, 20))
 
     elif menu == "Game":
         if keys[K_p] and not player.dead:
