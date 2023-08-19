@@ -2,6 +2,7 @@ import sys
 import pygame
 from pygame.locals import *
 from perlin_noise import PerlinNoise
+import pygame_textinput
 import time
 import random
 import math
@@ -848,10 +849,13 @@ def dt_adjusted(value):
 
 tilemap = []
 tiles = []
-SEED = 1
+seed_input = pygame_textinput.TextInput()
+SEED = seed_input.get_text()
 if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
-noise = PerlinNoise(octaves=1, seed=SEED)
+else:
+    seed = int(SEED)
+noise = PerlinNoise(octaves=1, seed=seed)
 player = Player()
 for i in range(100):
     tilemap.append([])
@@ -964,6 +968,7 @@ while True:
                 (screen.get_width(), screen.get_height())
             ).convert_alpha()
             pausesurf.fill((0, 0, 0, 100))
+        seed_input.update(events)
     if quitb.activated:
         pygame.quit()
         sys.exit()
