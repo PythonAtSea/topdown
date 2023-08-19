@@ -972,6 +972,8 @@ while True:
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.update_rect()
         quitb.draw()
+        title_surface = font.render("Topdown", True, (255, 255, 255))
+        screen.blit(title_surface, (screen.get_width() / 2 - title_surface.get_width() / 2, screen.get_height() / 2 - title_surface.get_height() / 2))
         debugb.draw()
         pygame.draw.rect(screen, (255, 255, 255), (0, 0, 100, 100))
         if keys[K_p]:
