@@ -6,6 +6,11 @@ import time
 import random
 import math
 
+def draw_title_screen():
+    title_font = pygame.font.Font(None, 50)
+    title_text = title_font.render("Game Title", True, (255, 255, 255))
+    screen.blit(title_text, (screen.get_width() / 2 - title_text.get_width() / 2, screen.get_height() / 2 - title_text.get_height() / 2))
+
 pygame.init()
 DEBUG = False
 screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
@@ -968,6 +973,7 @@ while True:
         pygame.quit()
         sys.exit()
     if menu == "Start":
+        draw_title_screen()
         quitb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.update_rect()
