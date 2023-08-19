@@ -5,6 +5,7 @@ from perlin_noise import PerlinNoise
 import time
 import random
 import math
+import pygame.font
 
 pygame.init()
 DEBUG = False
@@ -12,6 +13,7 @@ screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
 font = pygame.font.Font("fonts/Pixel.ttf", 35)
 font2 = pygame.font.Font("fonts/Pixel.ttf", 50)
 clock = pygame.time.Clock()
+title_font = pygame.font.Font(None, 72)
 onsound = pygame.mixer.Sound("sounds/on.wav")
 offsound = pygame.mixer.Sound("sounds/off.wav")
 SCALE_FACTOR = 4
@@ -944,6 +946,13 @@ deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alp
 deadsurf.fill((255, 0, 0, 100))
 pausesurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
 pausesurf.fill((0, 0, 0, 100))
+def draw_title_screen():
+    screen.fill((0, 0, 0))
+    title_text = title_font.render('Topdown Game', True, (255, 255, 255))
+    title_pos = ((screen.get_width() - title_text.get_width()) / 2, (screen.get_height() - title_text.get_height()) / 2)
+    screen.blit(title_text, title_pos)
+    pygame.display.flip()
+
 while True:
     screen.fill((0, 0, 25))
     events = pygame.event.get()
@@ -968,14 +977,19 @@ while True:
         pygame.quit()
         sys.exit()
     if menu == "Start":
+        draw_title_screen()
+        while True:
+            pygame.event.pump()
+            if any(pygame.key.get_pressed()):
+                break
+            pygame.time.wait(100)
+        menu = "Game"
         quitb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.update_rect()
         quitb.draw()
         debugb.draw()
         pygame.draw.rect(screen, (255, 255, 255), (0, 0, 100, 100))
-        if keys[K_p]:
-            menu = "Game"
     elif menu == "Game":
         if keys[K_p] and not player.dead:
             game_paused = True
