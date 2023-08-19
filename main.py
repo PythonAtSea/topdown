@@ -974,7 +974,11 @@ while True:
         quitb.draw()
         debugb.draw()
         pygame.draw.rect(screen, (255, 255, 255), (0, 0, 100, 100))
-        if keys[K_p]:
+        title_screen = pygame.Surface((500, 500))
+        title_text = font.render("Game Title", True, (255, 255, 255))
+        title_screen.blit(title_text, (250 - title_text.get_width() // 2, 250 - title_text.get_height() // 2))
+        screen.blit(title_screen, (0, 0))
+        if keys[K_RETURN]:
             menu = "Game"
     elif menu == "Game":
         if keys[K_p] and not player.dead:
