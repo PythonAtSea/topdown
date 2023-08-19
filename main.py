@@ -1021,7 +1021,7 @@ while True:
             quitb.active = True
             rsb.active = True
             screen.blit(deadsurf, (0, 0))
-            txt = fontsbig.render(player.deathmessage, False, (255, 255, 255))
+            txt = fontbig.render(player.deathmessage, False, (255, 255, 255))
             screen.blit(
                 txt,
                 (
