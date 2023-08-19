@@ -800,12 +800,12 @@ class Enemy:
             if player.dead:
                 self.discoverdead = True
             if player.damage(20, "slain", "a zombie"):
-                dx = player.x - self.x
-                dy = player.y + self.y
+                dx = player.x - self.x + 1
+                dy = player.y + self.y + 1
                 distance = math.sqrt(dx**2 + dy**2)
                 dx /= distance
                 dy /= distance
-
+        
                 player.dx += dx * 10
                 player.dy += dy * 10
 
@@ -987,6 +987,8 @@ while True:
         if keys[K_p] and not player.dead:
             game_paused = True
         for tile in tiles:
+            tile.x += 1
+            tile.y += 1
             tile.draw()
         player.draw()
         player.move()
