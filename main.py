@@ -13,7 +13,8 @@ pygame.init()
 DEBUG = False
 screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
 font = pygame.font.Font("fonts/Pixel.ttf", 35)
-font2 = pygame.font.Font("fonts/Pixel.ttf", 50)
+fontbig = pygame.font.Font("fonts/Pixel.ttf", 50)
+fontsmall = pygame.font.Font("fonts/Pixel.ttf", 20)
 clock = pygame.time.Clock()
 onsound = pygame.mixer.Sound("sounds/on.wav")
 offsound = pygame.mixer.Sound("sounds/off.wav")
@@ -840,7 +841,7 @@ game_paused = True
 
 
 def dt_adjusted(value):
-    if clock.get_fps() == 0 or game_paused:
+    if clock.get_fps() == 0 or (game_paused and menu != "Start"):
         return 0
     return value / clock.get_fps() * 60
 
@@ -971,27 +972,39 @@ while True:
         pygame.quit()
         sys.exit()
     if menu == "Start":
-        grass_offset_x += 1
-        grass_offset_y += 1
+        grass_offset_x += dt_adjusted(1)
+        grass_offset_y += dt_adjusted(1)
         if grass_offset_x >= grassimgs["g"].get_width():
             grass_offset_x = 0
         if grass_offset_y >= grassimgs["g"].get_height():
             grass_offset_y = 0
+        # Draw a matrix of the image "grassimgs["g"]"
+        for i in range(
+            -grassimgs["g"].get_width(), screen.get_width(), grassimgs["g"].get_width()
+        ):
+            for j in range(
+                -grassimgs["g"].get_height(),
+                screen.get_height(),
+                grassimgs["g"].get_height(),
+            ):
+                screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
         quitb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
         quitb.update_rect()
         quitb.draw()
         debugb.draw()
-        pygame.draw.rect(screen, (255, 255, 255), (0, 0, 100, 100))
         if keys[K_p]:
             menu = "Game"
         # Draw the title "Topdown"
-        title_surface = font.render("Topdown", False, (255, 255, 255))
-        screen.blit(title_surface, (screen.get_width() / 2 - title_surface.get_width() / 2, screen.get_height() / 2 - title_surface.get_height() / 2))
-        # Draw a matrix of the image "grassimgs["g"]"
-        for i in range(0, screen.get_width(), grassimgs["g"].get_width()):
-            for j in range(0, screen.get_height(), grassimgs["g"].get_height()):
-                screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
+        title_surface = fontbig.render("Topdown", False, (255, 255, 255))
+        screen.blit(
+            title_surface,
+            (
+                screen.get_width() / 2 - title_surface.get_width() / 2,
+                screen.get_height() / 2 - title_surface.get_height() / 2,
+            ),
+        )
+
     elif menu == "Game":
         if keys[K_p] and not player.dead:
             game_paused = True
@@ -1008,7 +1021,7 @@ while True:
             quitb.active = True
             rsb.active = True
             screen.blit(deadsurf, (0, 0))
-            txt = font.render(player.deathmessage, False, (255, 255, 255))
+            txt = fontsbig.render(player.deathmessage, False, (255, 255, 255))
             screen.blit(
                 txt,
                 (
@@ -1033,7 +1046,7 @@ while True:
             resumeb.draw()
             debugb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 208)
             debugb.draw()
-            txt = font2.render("Paused", False, (255, 255, 255))
+            txt = fontbig.render("Paused", False, (255, 255, 255))
             screen.blit(
                 txt,
                 (
