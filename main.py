@@ -938,9 +938,7 @@ debugb = Button(
     screen.get_width() / 2, screen.get_height() / 2 - 160, "Debug Mode (OFF)"
 )
 # Create a new game button
-newgameb = Button(
-    screen.get_width() / 2, screen.get_height() / 2 - 120, "New Game"
-)
+newgameb = Button(screen.get_width() / 2, screen.get_height() / 2 - 120, "New Game")
 enemys = []
 for i in range(10):
     enemys.append(Enemy(purpimgs, i * 100, 50))
@@ -977,8 +975,8 @@ while True:
         pygame.quit()
         sys.exit()
     if menu == "Start":
-        grass_offset_x += dt_adjusted(1)
-        grass_offset_y += dt_adjusted(1)
+        grass_offset_x += dt_adjusted(0.5)
+        grass_offset_y += dt_adjusted(0.5)
         if grass_offset_x >= grassimgs["g"].get_width():
             grass_offset_x = 0
         if grass_offset_y >= grassimgs["g"].get_height():
@@ -994,11 +992,12 @@ while True:
             ):
                 screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
         quitb.active = True
-        quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
+        newgameb.active = True
+        quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 105)
         quitb.update_rect()
         quitb.draw()
-        debugb.draw()
         # Draw the new game button
+        newgameb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 51)
         newgameb.draw()
         # Check if the new game button is activated
         if newgameb.activated:
@@ -1006,7 +1005,7 @@ while True:
         if keys[K_p]:
             menu = "Game"
         # Draw the title "Topdown"
-        title_surface = fontbig.render("Topdown", False, (255, 255, 255))
+        title_surface = fontbig.render("TOPDOWN", False, (255, 255, 255))
         screen.blit(
             title_surface,
             (
