@@ -937,12 +937,17 @@ resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
 debugb = Button(
     screen.get_width() / 2, screen.get_height() / 2 - 160, "Debug Mode (OFF)"
 )
+# Create a new game button
+newgameb = Button(
+    screen.get_width() / 2, screen.get_height() / 2 - 120, "New Game"
+)
 enemys = []
 for i in range(10):
     enemys.append(Enemy(purpimgs, i * 100, 50))
 quitb.active = False
 resumeb.active = False
 debugb.active = False
+newgameb.active = False
 pygame.key.set_repeat(200, 25)
 deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
 deadsurf.fill((255, 0, 0, 100))
@@ -993,6 +998,11 @@ while True:
         quitb.update_rect()
         quitb.draw()
         debugb.draw()
+        # Draw the new game button
+        newgameb.draw()
+        # Check if the new game button is activated
+        if newgameb.activated:
+            menu = "Game"
         if keys[K_p]:
             menu = "Game"
         # Draw the title "Topdown"
