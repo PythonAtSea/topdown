@@ -846,87 +846,91 @@ def dt_adjusted(value):
     return value / clock.get_fps() * 60
 
 
-tilemap = []
-tiles = []
+def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
+    tilemap = []
+    tiles = []
+    for i in range(100):
+        tilemap.append([])
+        for j in range(100):
+            if noise((i / 10, j / 10)) > -0.1:
+                tilemap[i].append("Grass")
+            else:
+                tilemap[i].append("Water")
+    for i in range(len(tilemap[0])):
+        tilemap[0][i] = "Grass"
+    for i in range(len(tilemap[99])):
+        tilemap[99][i] = "Grass"
+    for i in range(len(tilemap)):
+        tilemap[i][0] = "Grass"
+        tilemap[i][99] = "Grass"
+    for i in range(99):
+        for j in range(99):
+            if tilemap[i][j] == "Grass":
+                sides = [False, False, False, False, False, False, False, False, False]
+                ntw = False
+                if tilemap[i][j + 1] == "Water":
+                    sides[1] = True
+                    ntw = True
+                if tilemap[i - 1][j] == "Water":
+                    sides[2] = True
+                    ntw = True
+                if tilemap[i + 1][j] == "Water":
+                    sides[3] = True
+                    ntw = True
+                if tilemap[i][j - 1] == "Water":
+                    sides[0] = True
+                    ntw = True
+                if tilemap[i + 1][j + 1] == "Water" and not ntw:
+                    sides[8] = True
+                if tilemap[i - 1][j + 1] == "Water" and not ntw:
+                    sides[7] = True
+                if tilemap[i + 1][j - 1] == "Water" and not ntw:
+                    sides[6] = True
+                if tilemap[i - 1][j - 1] == "Water" and not ntw:
+                    sides[5] = True
+                tilemap[i][j] = Grass(i, j, *sides)
+    for i in range(99):
+        for j in range(99):
+            if tilemap[i][j] == "Water":
+                sides = [False, False, False, False, False]
+                ntw = False
+                if type(tilemap[i][j + 1]) == Grass:
+                    sides[1] = True
+                    ntw = True
+                if type(tilemap[i - 1][j]) == Grass:
+                    sides[2] = True
+                    ntw = True
+                if type(tilemap[i + 1][j]) == Grass:
+                    sides[3] = True
+                    ntw = True
+                if type(tilemap[i][j - 1]) == Grass:
+                    sides[0] = True
+                    ntw = True
+                tilemap[i][j] = Water(i, j, *sides)
+    for i in range(100):
+        for j in range(100):
+            if tilemap[i][j] == "Water":
+                tilemap[i][j] = Tile(i, j, imgs[0])
+            if tilemap[i][j] == "Grass":
+                tilemap[i][j] = Tile(i, j, imgs[0])
+    for i in range(len(tilemap[0])):
+        tilemap[0][i] = Barrier(tilemap[0][i].x / 64, tilemap[0][i].y / 64)
+    for i in range(len(tilemap[99])):
+        tilemap[99][i] = Barrier(tilemap[99][i].x / 64, tilemap[99][i].y / 64)
+    for i in range(len(tilemap)):
+        tilemap[i][0] = Barrier(tilemap[i][0].x / 64, tilemap[i][0].y / 64)
+        tilemap[i][99] = Barrier(tilemap[i][99].x / 64, tilemap[i][99].y / 64)
+    for i in tilemap:
+        for j in i:
+            tiles.append(j)
+    return tilemap, tiles
+
 SEED = 1
 if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
 noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
-for i in range(100):
-    tilemap.append([])
-    for j in range(100):
-        if noise((i / 10, j / 10)) > -0.1:
-            tilemap[i].append("Grass")
-        else:
-            tilemap[i].append("Water")
-for i in range(len(tilemap[0])):
-    tilemap[0][i] = "Grass"
-for i in range(len(tilemap[99])):
-    tilemap[99][i] = "Grass"
-for i in range(len(tilemap)):
-    tilemap[i][0] = "Grass"
-    tilemap[i][99] = "Grass"
-for i in range(99):
-    for j in range(99):
-        if tilemap[i][j] == "Grass":
-            sides = [False, False, False, False, False, False, False, False, False]
-            ntw = False
-            if tilemap[i][j + 1] == "Water":
-                sides[1] = True
-                ntw = True
-            if tilemap[i - 1][j] == "Water":
-                sides[2] = True
-                ntw = True
-            if tilemap[i + 1][j] == "Water":
-                sides[3] = True
-                ntw = True
-            if tilemap[i][j - 1] == "Water":
-                sides[0] = True
-                ntw = True
-            if tilemap[i + 1][j + 1] == "Water" and not ntw:
-                sides[8] = True
-            if tilemap[i - 1][j + 1] == "Water" and not ntw:
-                sides[7] = True
-            if tilemap[i + 1][j - 1] == "Water" and not ntw:
-                sides[6] = True
-            if tilemap[i - 1][j - 1] == "Water" and not ntw:
-                sides[5] = True
-            tilemap[i][j] = Grass(i, j, *sides)
-for i in range(99):
-    for j in range(99):
-        if tilemap[i][j] == "Water":
-            sides = [False, False, False, False, False]
-            ntw = False
-            if type(tilemap[i][j + 1]) == Grass:
-                sides[1] = True
-                ntw = True
-            if type(tilemap[i - 1][j]) == Grass:
-                sides[2] = True
-                ntw = True
-            if type(tilemap[i + 1][j]) == Grass:
-                sides[3] = True
-                ntw = True
-            if type(tilemap[i][j - 1]) == Grass:
-                sides[0] = True
-                ntw = True
-            tilemap[i][j] = Water(i, j, *sides)
-for i in range(100):
-    for j in range(100):
-        if tilemap[i][j] == "Water":
-            tilemap[i][j] = Tile(i, j, imgs[0])
-        if tilemap[i][j] == "Grass":
-            tilemap[i][j] = Tile(i, j, imgs[0])
-for i in range(len(tilemap[0])):
-    tilemap[0][i] = Barrier(tilemap[0][i].x / 64, tilemap[0][i].y / 64)
-for i in range(len(tilemap[99])):
-    tilemap[99][i] = Barrier(tilemap[99][i].x / 64, tilemap[99][i].y / 64)
-for i in range(len(tilemap)):
-    tilemap[i][0] = Barrier(tilemap[i][0].x / 64, tilemap[i][0].y / 64)
-    tilemap[i][99] = Barrier(tilemap[i][99].x / 64, tilemap[i][99].y / 64)
-for i in tilemap:
-    for j in i:
-        tiles.append(j)
+tilemap, tiles = create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs)
 
 offsetx = 0
 offsety = 0
