@@ -261,6 +261,302 @@ class Player:
         }
         self.dx = 0
         self.dy = 0
+        self.respawn_cooldown = 0
+        self.rect = pygame.Rect(
+            self.x - self.img.get_width() * 2,
+            self.y - self.img.get_height() * 2,
+            self.img.get_width() * 4,
+            self.img.get_height() * 4,
+        )
+
+    def draw(self):
+        if DEBUG:
+            pygame.draw.rect(
+                screen,
+                (255, 0, 0),
+                self.rect,
+            )
+        self.rect = pygame.Rect(
+            self.x - self.img.get_width() / 2,
+            self.y + self.img.get_height() / 2,
+            self.img.get_width(),
+            self.img.get_height(),
+        )
+        if self.hunger <= 0:
+            self.hunger = 0
+            if self.lhd < time.time():
+                self.damage(5, "hunger")
+                self.lhd = time.time() + 1
+        if self.dir == "down" and not self.moving:
+            self.img = self.imgs["down"]
+        elif self.dir == "down" and self.moving:
+            if time.time() % 0.4 < 0.2 and not game_paused:
+                self.img = self.imgs["down1"]
+            else:
+                self.img = self.imgs["down2"]
+        elif self.dir == "left" and not self.moving:
+            self.img = self.imgs["left"]
+        elif self.dir == "left" and self.moving:
+            if time.time() % 0.4 < 0.2 and not game_paused:
+                self.img = self.imgs["left"]
+            else:
+                self.img = self.imgs["pl1"]
+        elif self.dir == "right" and not self.moving:
+            self.img = self.imgs["right"]
+        elif self.dir == "right" and self.moving:
+            if time.time() % 0.4 < 0.2 and not game_paused:
+                self.img = self.imgs["right"]
+            else:
+                self.img = self.imgs["pr1"]
+        elif self.dir == "up" and not self.moving:
+            self.img = self.imgs["up"]
+        elif self.dir == "up" and self.moving:
+            if time.time() % 0.4 < 0.2 and not game_paused:
+                self.img = self.imgs["u1"]
+            else:
+                self.img = self.imgs["u2"]
+        screen.blit(
+            self.img,
+            (
+                screen.get_width() / 2 - self.img.get_width() / 2,
+                screen.get_height() / 2 - self.img.get_height() / 2,
+            ),
+        )
+        displayhunger = self.hunger - 5
+        if displayhunger > 15:
+            for i in range(10):
+                if displayhunger > i * 10:
+                    screen.blit(hbimgs["hb1"], (i * 32, 0))
+                elif displayhunger > (i - 1 * 10) + 5 and displayhunger > (i * 10) - 5:
+                    screen.blit(hbimgs["hb3"], (i * 32, 0))
+                else:
+                    screen.blit(hbimgs["hb2"], (i * 32, 0))
+        else:
+            for i in range(10):
+                offset = math.sin(time.time() * 25 + i * 10) * 5
+                if displayhunger > i * 10:
+                    screen.blit(hbimgs["hb1"], (i * 32, offset))
+                elif displayhunger > (i - 1 * 10) + 5 and displayhunger > (i * 10) - 5:
+                    screen.blit(hbimgs["hb3"], (i * 32, offset))
+                else:
+                    screen.blit(hbimgs["hb2"], (i * 32, offset))
+        displayhealth = self.health - 5
+        if self.health <= 20:
+            if self.ldt < time.time() and not self.dead:
+                for i in range(10):
+                    offset = math.sin(time.time() * 25 + i * 10) * 5
+                    if displayhealth > (i * 10):
+                        screen.blit(
+                            healthimgs["h1"],
+                            (i * 32 + screen.get_width() - 325, offset),
+                        )
+                    elif (
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
+                    ):
+                        screen.blit(
+                            healthimgs["h2"],
+                            (i * 32 + screen.get_width() - 325, offset),
+                        )
+                    else:
+                        screen.blit(
+                            healthimgs["h3"],
+                            (i * 32 + screen.get_width() - 325, offset),
+                        )
+            else:
+                for i in range(10):
+                    offset = math.sin(time.time() * 25 + i * 10) * 5
+                    if displayhealth > (i * 10):
+                        screen.blit(
+                            healthimgs["fh1"],
+                            (i * 32 + screen.get_width() - 325, offset),
+                        )
+                    elif (
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
+                    ):
+                        screen.blit(
+                            healthimgs["fh2"],
+                            (i * 32 + screen.get_width() - 325, offset),
+                        )
+                    else:
+                        screen.blit(
+                            healthimgs["fh3"],
+                            (i * 32 + screen.get_width() - 325, offset),
+                        )
+        else:
+            if self.ldt < time.time() and not self.dead:
+                for i in range(10):
+                    if displayhealth > (i * 10):
+                        screen.blit(
+                            healthimgs["h1"], (i * 32 + screen.get_width() - 325, 0)
+                        )
+                    elif (
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
+                    ):
+                        screen.blit(
+                            healthimgs["h2"], (i * 32 + screen.get_width() - 325, 0)
+                        )
+                    else:
+                        screen.blit(
+                            healthimgs["h3"], (i * 32 + screen.get_width() - 325, 0)
+                        )
+            else:
+                for i in range(10):
+                    if displayhealth > (i * 10):
+                        screen.blit(
+                            healthimgs["fh1"], (i * 32 + screen.get_width() - 325, 0)
+                        )
+                    elif (
+                        displayhealth > (i - 1 * 10) + 5
+                        and displayhealth > (i * 10) - 5
+                    ):
+                        screen.blit(
+                            healthimgs["fh2"], (i * 32 + screen.get_width() - 325, 0)
+                        )
+                    else:
+                        screen.blit(
+                            healthimgs["fh3"], (i * 32 + screen.get_width() - 325, 0)
+                        )
+
+    def damage(self, amount, damagetype="normal", secondary=""):
+        if self.health > 0 and self.ldt < time.time() and not game_paused:
+            punch.play()
+            self.health -= amount
+            self.ldt = time.time() + 0.4
+            self.deathmessage = self.deathtypes[damagetype].format(
+                self.username, secondary
+            )
+            return True
+        else:
+            return False
+
+    def move(self):
+        if not game_paused:
+            self.x += self.dx
+            self.y += self.dy
+        if self.dx > 0:
+            self.dx -= dt_adjusted(1)
+        elif self.dx < 0:
+            self.dx += dt_adjusted(1)
+        if self.dy > 0:
+            self.dy -= dt_adjusted(1)
+        elif self.dy < 0:
+            self.dy += dt_adjusted(1)
+        if 1 > self.dx > -1:
+            self.dx = 0
+        if 1 > self.dy > -1:
+            self.dy = 0
+        if self.health <= 0:
+            self.dead = True
+            self.hunger = 0
+            self.moving = False
+            self.dir = ""
+            self.respawn_cooldown = time.time() + 1
+            self.img = pygame.transform.scale_by(
+                pygame.image.load("images/pd.png"), SCALE_FACTOR
+            )
+        if self.x < 0:
+            self.x = 0
+        if self.y > 0:
+            self.y = 0
+        if not self.dead and not game_paused:
+            if keys[keybinds["kill"]]:
+                self.damage(100)
+            if keys[keybinds["sprint"]] and self.hunger > 0:
+                if self.moving:
+                    self.hunger -= dt_adjusted(0.1)
+                if self.speed < 3.5:
+                    self.speed += 0.1
+            else:
+                if self.speed > 2:
+                    self.speed -= 0.1
+                elif self.speed < 1.8:
+                    self.speed += 0.1
+            self.moving = False
+            if self.ldt > time.time():
+                self.speed = 1.25
+            if keys[keybinds["up"]]:
+                if keys[keybinds["left"]] or keys[keybinds["right"]]:
+                    self.y += dt_adjusted(1.5) * self.speed
+                else:
+                    self.y += dt_adjusted(3) * self.speed
+                self.moving = True
+                self.dir = "up"
+            if keys[keybinds["down"]]:
+                self.dir = "down"
+                if keys[keybinds["left"]] or keys[keybinds["right"]]:
+                    self.y -= dt_adjusted(1.5) * self.speed
+                else:
+                    self.y -= dt_adjusted(3) * self.speed
+                self.moving = True
+            if keys[keybinds["left"]]:
+                self.dir = "left"
+                if keys[keybinds["up"]] or keys[keybinds["down"]]:
+                    self.x -= dt_adjusted(1.5) * self.speed
+                else:
+                    self.x -= dt_adjusted(3) * self.speed
+                self.moving = True
+            if keys[keybinds["right"]]:
+                self.dir = "right"
+                if keys[keybinds["up"]] or keys[keybinds["down"]]:
+                    self.x += dt_adjusted(1.5) * self.speed
+                else:
+                    self.x += dt_adjusted(3) * self.speed
+                self.moving = True
+
+    def respawn(self):
+        if time.time() < self.respawn_cooldown:
+            return
+        self.health = 100
+        self.hunger = 100
+        self.dead = False
+        self.moving = False
+        self.dir = "down"
+        self.x = 0
+        self.y = 0
+        self.ldt = time.time()
+        self.deathmessage = ""
+            right=pygame.transform.scale_by(
+                pygame.image.load("images/pr.png"), SCALE_FACTOR
+            ),
+            down1=pygame.transform.scale_by(
+                pygame.image.load("images/pd1.png"), SCALE_FACTOR
+            ),
+            down2=pygame.transform.scale_by(
+                pygame.image.load("images/pd2.png"), SCALE_FACTOR
+            ),
+            pl1=pygame.transform.scale_by(
+                pygame.image.load("images/pl1.png"), SCALE_FACTOR
+            ),
+            pr1=pygame.transform.scale_by(
+                pygame.image.load("images/pr1.png"), SCALE_FACTOR
+            ),
+            up=pygame.transform.scale_by(
+                pygame.image.load("images/pu.png"), SCALE_FACTOR
+            ),
+            u1=pygame.transform.scale_by(
+                pygame.image.load("images/pu1.png"), SCALE_FACTOR
+            ),
+            u2=pygame.transform.scale_by(
+                pygame.image.load("images/pu2.png"), SCALE_FACTOR
+            ),
+        )
+        self.dir = "down"
+        self.moving = False
+        self.ldt = 0
+        self.dead = False
+        self.username = "Filler Username"
+        self.deathmessage = ""
+        self.deathtypes = {
+            "hunger": "{} starved to death",
+            "normal": "{} died",
+            "slain": "{} was slain by {}",
+        }
+        self.dx = 0
+        self.dy = 0
+        self.respawn_cooldown = 0
         self.rect = pygame.Rect(
             self.x - self.img.get_width() * 2,
             self.y - self.img.get_height() * 2,
@@ -531,6 +827,7 @@ class Button:
         self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         self.active = True
         self.pressed = False
+        self.darken = False
         self.activated = False
 
     def draw(self):
@@ -567,6 +864,12 @@ class Button:
                 pygame.draw.rect(
                     self.surf,
                     (255, 255, 255, 100),
+                    (0, 0, self.rect.width, self.rect.height),
+                )
+            elif self.darken:
+                pygame.draw.rect(
+                    self.surf,
+                    (200, 200, 200, 0),
                     (0, 0, self.rect.width, self.rect.height),
                 )
             else:
@@ -1033,6 +1336,7 @@ while True:
         if player.dead:
             quitb.active = True
             rsb.active = True
+            rsb.darken = time.time() < player.respawn_cooldown
             screen.blit(deadsurf, (0, 0))
             txt = fontbig.render(player.deathmessage, False, (255, 255, 255))
             screen.blit(
@@ -1048,6 +1352,7 @@ while True:
             rsb.draw()
             if rsb.activated:
                 player.respawn()
+                rsb.darken = False
         if game_paused:
             quitb.active = True
             resumeb.active = True
