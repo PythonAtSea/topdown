@@ -22,70 +22,108 @@ offsound = pygame.mixer.Sound("sounds/off.wav")
 SCALE_FACTOR = 4
 imgs = [
     pygame.transform.scale_by(pygame.image.load("images/w.png"), SCALE_FACTOR),
-    pygame.transform.scale_by(pygame.image.load("images/barrier.png"), SCALE_FACTOR),
-    pygame.transform.scale_by(pygame.image.load("images/barrier2.png"), SCALE_FACTOR),
+    pygame.transform.scale_by(pygame.image.load("images/barrier.png"),
+                              SCALE_FACTOR),
+    pygame.transform.scale_by(pygame.image.load("images/barrier2.png"),
+                              SCALE_FACTOR),
 ]
 red = pygame.surface.Surface((64, 64))
 red.fill((255, 0, 0))
 grassimgs = dict(
-    g=pygame.transform.scale_by(pygame.image.load("images/g.png"), SCALE_FACTOR),
-    gd=pygame.transform.scale_by(pygame.image.load("images/gd.png"), SCALE_FACTOR),
-    gu=pygame.transform.scale_by(pygame.image.load("images/gu.png"), SCALE_FACTOR),
-    gl=pygame.transform.scale_by(pygame.image.load("images/gl.png"), SCALE_FACTOR),
-    gr=pygame.transform.scale_by(pygame.image.load("images/gr.png"), SCALE_FACTOR),
-    gur=pygame.transform.scale_by(pygame.image.load("images/gur.png"), SCALE_FACTOR),
-    gul=pygame.transform.scale_by(pygame.image.load("images/gul.png"), SCALE_FACTOR),
-    gdr=pygame.transform.scale_by(pygame.image.load("images/gdr.png"), SCALE_FACTOR),
-    gdl=pygame.transform.scale_by(pygame.image.load("images/gdl.png"), SCALE_FACTOR),
-    dgul=pygame.transform.scale_by(pygame.image.load("images/dgul.png"), SCALE_FACTOR),
-    dgur=pygame.transform.scale_by(pygame.image.load("images/dgur.png"), SCALE_FACTOR),
-    dgdl=pygame.transform.scale_by(pygame.image.load("images/dgdl.png"), SCALE_FACTOR),
-    dgdr=pygame.transform.scale_by(pygame.image.load("images/dgdr.png"), SCALE_FACTOR),
-    gudl=pygame.transform.scale_by(pygame.image.load("images/gudl.png"), SCALE_FACTOR),
-    gudr=pygame.transform.scale_by(pygame.image.load("images/gudr.png"), SCALE_FACTOR),
-    gulr=pygame.transform.scale_by(pygame.image.load("images/gulr.png"), SCALE_FACTOR),
-    gdlr=pygame.transform.scale_by(pygame.image.load("images/gdlr.png"), SCALE_FACTOR),
+    g=pygame.transform.scale_by(pygame.image.load("images/g.png"),
+                                SCALE_FACTOR),
+    gd=pygame.transform.scale_by(pygame.image.load("images/gd.png"),
+                                 SCALE_FACTOR),
+    gu=pygame.transform.scale_by(pygame.image.load("images/gu.png"),
+                                 SCALE_FACTOR),
+    gl=pygame.transform.scale_by(pygame.image.load("images/gl.png"),
+                                 SCALE_FACTOR),
+    gr=pygame.transform.scale_by(pygame.image.load("images/gr.png"),
+                                 SCALE_FACTOR),
+    gur=pygame.transform.scale_by(pygame.image.load("images/gur.png"),
+                                  SCALE_FACTOR),
+    gul=pygame.transform.scale_by(pygame.image.load("images/gul.png"),
+                                  SCALE_FACTOR),
+    gdr=pygame.transform.scale_by(pygame.image.load("images/gdr.png"),
+                                  SCALE_FACTOR),
+    gdl=pygame.transform.scale_by(pygame.image.load("images/gdl.png"),
+                                  SCALE_FACTOR),
+    dgul=pygame.transform.scale_by(pygame.image.load("images/dgul.png"),
+                                   SCALE_FACTOR),
+    dgur=pygame.transform.scale_by(pygame.image.load("images/dgur.png"),
+                                   SCALE_FACTOR),
+    dgdl=pygame.transform.scale_by(pygame.image.load("images/dgdl.png"),
+                                   SCALE_FACTOR),
+    dgdr=pygame.transform.scale_by(pygame.image.load("images/dgdr.png"),
+                                   SCALE_FACTOR),
+    gudl=pygame.transform.scale_by(pygame.image.load("images/gudl.png"),
+                                   SCALE_FACTOR),
+    gudr=pygame.transform.scale_by(pygame.image.load("images/gudr.png"),
+                                   SCALE_FACTOR),
+    gulr=pygame.transform.scale_by(pygame.image.load("images/gulr.png"),
+                                   SCALE_FACTOR),
+    gdlr=pygame.transform.scale_by(pygame.image.load("images/gdlr.png"),
+                                   SCALE_FACTOR),
     t=red,
 )
 waterimgs = dict(
     t=red,
-    w=pygame.transform.scale_by(pygame.image.load("images/w.png"), SCALE_FACTOR),
-    wu=pygame.transform.scale_by(pygame.image.load("images/wu.png"), SCALE_FACTOR),
-    wd=pygame.transform.scale_by(pygame.image.load("images/wd.png"), SCALE_FACTOR),
-    wl=pygame.transform.scale_by(pygame.image.load("images/wl.png"), SCALE_FACTOR),
-    wr=pygame.transform.scale_by(pygame.image.load("images/wr.png"), SCALE_FACTOR),
-    wul=pygame.transform.scale_by(pygame.image.load("images/wul.png"), SCALE_FACTOR),
-    wur=pygame.transform.scale_by(pygame.image.load("images/wur.png"), SCALE_FACTOR),
-    wdl=pygame.transform.scale_by(pygame.image.load("images/wdl.png"), SCALE_FACTOR),
-    wdr=pygame.transform.scale_by(pygame.image.load("images/wdr.png"), SCALE_FACTOR),
-    wudl=pygame.transform.scale_by(pygame.image.load("images/wudl.png"), SCALE_FACTOR),
-    wudr=pygame.transform.scale_by(pygame.image.load("images/wudr.png"), SCALE_FACTOR),
-    wulr=pygame.transform.scale_by(pygame.image.load("images/wulr.png"), SCALE_FACTOR),
-    wdlr=pygame.transform.scale_by(pygame.image.load("images/wdlr.png"), SCALE_FACTOR),
+    w=pygame.transform.scale_by(pygame.image.load("images/w.png"),
+                                SCALE_FACTOR),
+    wu=pygame.transform.scale_by(pygame.image.load("images/wu.png"),
+                                 SCALE_FACTOR),
+    wd=pygame.transform.scale_by(pygame.image.load("images/wd.png"),
+                                 SCALE_FACTOR),
+    wl=pygame.transform.scale_by(pygame.image.load("images/wl.png"),
+                                 SCALE_FACTOR),
+    wr=pygame.transform.scale_by(pygame.image.load("images/wr.png"),
+                                 SCALE_FACTOR),
+    wul=pygame.transform.scale_by(pygame.image.load("images/wul.png"),
+                                  SCALE_FACTOR),
+    wur=pygame.transform.scale_by(pygame.image.load("images/wur.png"),
+                                  SCALE_FACTOR),
+    wdl=pygame.transform.scale_by(pygame.image.load("images/wdl.png"),
+                                  SCALE_FACTOR),
+    wdr=pygame.transform.scale_by(pygame.image.load("images/wdr.png"),
+                                  SCALE_FACTOR),
+    wudl=pygame.transform.scale_by(pygame.image.load("images/wudl.png"),
+                                   SCALE_FACTOR),
+    wudr=pygame.transform.scale_by(pygame.image.load("images/wudr.png"),
+                                   SCALE_FACTOR),
+    wulr=pygame.transform.scale_by(pygame.image.load("images/wulr.png"),
+                                   SCALE_FACTOR),
+    wdlr=pygame.transform.scale_by(pygame.image.load("images/wdlr.png"),
+                                   SCALE_FACTOR),
 )
 hbimgs = dict(
-    hb1=pygame.transform.scale_by(pygame.image.load("images/hb1.png"), SCALE_FACTOR),
-    hb2=pygame.transform.scale_by(pygame.image.load("images/hb2.png"), SCALE_FACTOR),
-    hb3=pygame.transform.scale_by(pygame.image.load("images/hb3.png"), SCALE_FACTOR),
+    hb1=pygame.transform.scale_by(pygame.image.load("images/hb1.png"),
+                                  SCALE_FACTOR),
+    hb2=pygame.transform.scale_by(pygame.image.load("images/hb2.png"),
+                                  SCALE_FACTOR),
+    hb3=pygame.transform.scale_by(pygame.image.load("images/hb3.png"),
+                                  SCALE_FACTOR),
 )
 healthimgs = dict(
-    h1=pygame.transform.scale_by(pygame.image.load("images/heart.png"), SCALE_FACTOR),
-    h2=pygame.transform.scale_by(pygame.image.load("images/heart2.png"), SCALE_FACTOR),
-    h3=pygame.transform.scale_by(pygame.image.load("images/heart3.png"), SCALE_FACTOR),
-    fh1=pygame.transform.scale_by(pygame.image.load("images/fheart.png"), SCALE_FACTOR),
-    fh2=pygame.transform.scale_by(
-        pygame.image.load("images/fheart2.png"), SCALE_FACTOR
-    ),
-    fh3=pygame.transform.scale_by(
-        pygame.image.load("images/fheart3.png"), SCALE_FACTOR
-    ),
+    h1=pygame.transform.scale_by(pygame.image.load("images/heart.png"),
+                                 SCALE_FACTOR),
+    h2=pygame.transform.scale_by(pygame.image.load("images/heart2.png"),
+                                 SCALE_FACTOR),
+    h3=pygame.transform.scale_by(pygame.image.load("images/heart3.png"),
+                                 SCALE_FACTOR),
+    fh1=pygame.transform.scale_by(pygame.image.load("images/fheart.png"),
+                                  SCALE_FACTOR),
+    fh2=pygame.transform.scale_by(pygame.image.load("images/fheart2.png"),
+                                  SCALE_FACTOR),
+    fh3=pygame.transform.scale_by(pygame.image.load("images/fheart3.png"),
+                                  SCALE_FACTOR),
 )
 purpimgs = dict(
-    rest=pygame.transform.scale_by(
-        pygame.image.load("images/purpguyrest.png"), SCALE_FACTOR
-    ),
-    d1=pygame.transform.scale_by(pygame.image.load("images/pgd1.png"), SCALE_FACTOR),
-    d2=pygame.transform.scale_by(pygame.image.load("images/pgd2.png"), SCALE_FACTOR),
+    rest=pygame.transform.scale_by(pygame.image.load("images/purpguyrest.png"),
+                                   SCALE_FACTOR),
+    d1=pygame.transform.scale_by(pygame.image.load("images/pgd1.png"),
+                                 SCALE_FACTOR),
+    d2=pygame.transform.scale_by(pygame.image.load("images/pgd2.png"),
+                                 SCALE_FACTOR),
 )
 punch = pygame.mixer.Sound("sounds/punch.ogg")
 punch.set_volume(0.4)
@@ -102,6 +140,7 @@ keybinds = {
 
 class Tile:
     """ """
+
     def __init__(self, x, y, img):
         self.x = x * 64
         self.y = y * 64
@@ -109,24 +148,23 @@ class Tile:
 
     def draw(self):
         """ """
-        if (
-            -64 < self.x - offsetx < screen.get_width()
-            and -64 < self.y + offsety < screen.get_height()
-        ):
+        if (-64 < self.x - offsetx < screen.get_width()
+                and -64 < self.y + offsety < screen.get_height()):
             screen.blit(self.img, (self.x - offsetx, self.y + offsety))
 
 
 class Barrier(Tile):
     """ """
+
     def __init__(self, x, y):
         super().__init__(x, y, imgs[1])
 
 
 class Grass(Tile):
     """ """
-    def __init__(
-        self, x, y, up, down, left, right, test, upleft, upright, downleft, downright
-    ):
+
+    def __init__(self, x, y, up, down, left, right, test, upleft, upright,
+                 downleft, downright):
         super().__init__(x, y, grassimgs["g"])
         self.up = up
         self.right = right
@@ -175,6 +213,7 @@ class Grass(Tile):
 
 class Water(Tile):
     """ """
+
     def __init__(self, x, y, up, down, left, right, test):
         super().__init__(x, y, imgs[0])
         self.up = up
@@ -213,47 +252,37 @@ class Water(Tile):
 
 class Player:
     """ """
+
     def __init__(self):
         self.x = 0
         self.y = 0
         self.speed = 1.5
         self.img = pygame.transform.scale_by(
-            pygame.image.load("images/player.png"), SCALE_FACTOR
-        )
+            pygame.image.load("images/player.png"), SCALE_FACTOR)
         self.hunger = 100
         self.health = 100
         self.lhd = 0
         self.imgs = dict(
             down=pygame.transform.scale_by(
-                pygame.image.load("images/player.png"), SCALE_FACTOR
-            ),
-            left=pygame.transform.scale_by(
-                pygame.image.load("images/pl.png"), SCALE_FACTOR
-            ),
-            right=pygame.transform.scale_by(
-                pygame.image.load("images/pr.png"), SCALE_FACTOR
-            ),
+                pygame.image.load("images/player.png"), SCALE_FACTOR),
+            left=pygame.transform.scale_by(pygame.image.load("images/pl.png"),
+                                           SCALE_FACTOR),
+            right=pygame.transform.scale_by(pygame.image.load("images/pr.png"),
+                                            SCALE_FACTOR),
             down1=pygame.transform.scale_by(
-                pygame.image.load("images/pd1.png"), SCALE_FACTOR
-            ),
+                pygame.image.load("images/pd1.png"), SCALE_FACTOR),
             down2=pygame.transform.scale_by(
-                pygame.image.load("images/pd2.png"), SCALE_FACTOR
-            ),
-            pl1=pygame.transform.scale_by(
-                pygame.image.load("images/pl1.png"), SCALE_FACTOR
-            ),
-            pr1=pygame.transform.scale_by(
-                pygame.image.load("images/pr1.png"), SCALE_FACTOR
-            ),
-            up=pygame.transform.scale_by(
-                pygame.image.load("images/pu.png"), SCALE_FACTOR
-            ),
-            u1=pygame.transform.scale_by(
-                pygame.image.load("images/pu1.png"), SCALE_FACTOR
-            ),
-            u2=pygame.transform.scale_by(
-                pygame.image.load("images/pu2.png"), SCALE_FACTOR
-            ),
+                pygame.image.load("images/pd2.png"), SCALE_FACTOR),
+            pl1=pygame.transform.scale_by(pygame.image.load("images/pl1.png"),
+                                          SCALE_FACTOR),
+            pr1=pygame.transform.scale_by(pygame.image.load("images/pr1.png"),
+                                          SCALE_FACTOR),
+            up=pygame.transform.scale_by(pygame.image.load("images/pu.png"),
+                                         SCALE_FACTOR),
+            u1=pygame.transform.scale_by(pygame.image.load("images/pu1.png"),
+                                         SCALE_FACTOR),
+            u2=pygame.transform.scale_by(pygame.image.load("images/pu2.png"),
+                                         SCALE_FACTOR),
         )
         self.dir = "down"
         self.moving = False
@@ -334,7 +363,8 @@ class Player:
             for i in range(10):
                 if displayhunger > i * 10:
                     screen.blit(hbimgs["hb1"], (i * 32, 0))
-                elif displayhunger > (i - 1 * 10) + 5 and displayhunger > (i * 10) - 5:
+                elif displayhunger > (i - 1 * 10) + 5 and displayhunger > (
+                        i * 10) - 5:
                     screen.blit(hbimgs["hb3"], (i * 32, 0))
                 else:
                     screen.blit(hbimgs["hb2"], (i * 32, 0))
@@ -343,7 +373,8 @@ class Player:
                 offset = math.sin(time.time() * 25 + i * 10) * 5
                 if displayhunger > i * 10:
                     screen.blit(hbimgs["hb1"], (i * 32, offset))
-                elif displayhunger > (i - 1 * 10) + 5 and displayhunger > (i * 10) - 5:
+                elif displayhunger > (i - 1 * 10) + 5 and displayhunger > (
+                        i * 10) - 5:
                     screen.blit(hbimgs["hb3"], (i * 32, offset))
                 else:
                     screen.blit(hbimgs["hb2"], (i * 32, offset))
@@ -357,10 +388,8 @@ class Player:
                             healthimgs["h1"],
                             (i * 32 + screen.get_width() - 325, offset),
                         )
-                    elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
-                    ):
+                    elif (displayhealth > (i - 1 * 10) + 5
+                          and displayhealth > (i * 10) - 5):
                         screen.blit(
                             healthimgs["h2"],
                             (i * 32 + screen.get_width() - 325, offset),
@@ -378,10 +407,8 @@ class Player:
                             healthimgs["fh1"],
                             (i * 32 + screen.get_width() - 325, offset),
                         )
-                    elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
-                    ):
+                    elif (displayhealth > (i - 1 * 10) + 5
+                          and displayhealth > (i * 10) - 5):
                         screen.blit(
                             healthimgs["fh2"],
                             (i * 32 + screen.get_width() - 325, offset),
@@ -395,37 +422,27 @@ class Player:
             if self.ldt < time.time() and not self.dead:
                 for i in range(10):
                     if displayhealth > (i * 10):
-                        screen.blit(
-                            healthimgs["h1"], (i * 32 + screen.get_width() - 325, 0)
-                        )
-                    elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
-                    ):
-                        screen.blit(
-                            healthimgs["h2"], (i * 32 + screen.get_width() - 325, 0)
-                        )
+                        screen.blit(healthimgs["h1"],
+                                    (i * 32 + screen.get_width() - 325, 0))
+                    elif (displayhealth > (i - 1 * 10) + 5
+                          and displayhealth > (i * 10) - 5):
+                        screen.blit(healthimgs["h2"],
+                                    (i * 32 + screen.get_width() - 325, 0))
                     else:
-                        screen.blit(
-                            healthimgs["h3"], (i * 32 + screen.get_width() - 325, 0)
-                        )
+                        screen.blit(healthimgs["h3"],
+                                    (i * 32 + screen.get_width() - 325, 0))
             else:
                 for i in range(10):
                     if displayhealth > (i * 10):
-                        screen.blit(
-                            healthimgs["fh1"], (i * 32 + screen.get_width() - 325, 0)
-                        )
-                    elif (
-                        displayhealth > (i - 1 * 10) + 5
-                        and displayhealth > (i * 10) - 5
-                    ):
-                        screen.blit(
-                            healthimgs["fh2"], (i * 32 + screen.get_width() - 325, 0)
-                        )
+                        screen.blit(healthimgs["fh1"],
+                                    (i * 32 + screen.get_width() - 325, 0))
+                    elif (displayhealth > (i - 1 * 10) + 5
+                          and displayhealth > (i * 10) - 5):
+                        screen.blit(healthimgs["fh2"],
+                                    (i * 32 + screen.get_width() - 325, 0))
                     else:
-                        screen.blit(
-                            healthimgs["fh3"], (i * 32 + screen.get_width() - 325, 0)
-                        )
+                        screen.blit(healthimgs["fh3"],
+                                    (i * 32 + screen.get_width() - 325, 0))
 
     def damage(self, amount, damagetype="normal", secondary=""):
         """
@@ -440,8 +457,7 @@ class Player:
             self.health -= amount
             self.ldt = time.time() + 0.4
             self.deathmessage = self.deathtypes[damagetype].format(
-                self.username, secondary
-            )
+                self.username, secondary)
             return True
         else:
             return False
@@ -469,8 +485,7 @@ class Player:
             self.moving = False
             self.dir = ""
             self.img = pygame.transform.scale_by(
-                pygame.image.load("images/pd.png"), SCALE_FACTOR
-            )
+                pygame.image.load("images/pd.png"), SCALE_FACTOR)
         if self.x < 0:
             self.x = 0
         if self.y > 0:
@@ -535,6 +550,7 @@ class Player:
 
 class Button:
     """ """
+
     def __init__(self, x, y, text, margins=10):
         self.x = x
         self.y = y
@@ -546,25 +562,21 @@ class Button:
             self.text.get_width() + self.margins,
             self.text.get_height() + self.margins,
         )
-        self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.surf = pygame.Surface((self.rect.width, self.rect.height),
+                                   pygame.SRCALPHA)
         self.active = True
         self.pressed = False
         self.activated = False
 
     def draw(self):
         """ """
-        if (
-            not self.pressed
-            and self.rect.collidepoint(pygame.mouse.get_pos())
-            and pygame.mouse.get_pressed()[0]
-            and self.active
-            and not self.activated
-        ):
+        if (not self.pressed and self.rect.collidepoint(pygame.mouse.get_pos())
+                and pygame.mouse.get_pressed()[0] and self.active
+                and not self.activated):
             onsound.play()
         if self.pressed and (
-            not pygame.mouse.get_pressed()[0]
-            or not self.rect.collidepoint(pygame.mouse.get_pos())
-        ):
+                not pygame.mouse.get_pressed()[0]
+                or not self.rect.collidepoint(pygame.mouse.get_pos())):
             offsound.play()
             self.pressed = False
             if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -572,10 +584,8 @@ class Button:
         elif self.activated:
             self.activated = False
         if self.active:
-            if (
-                self.rect.collidepoint(pygame.mouse.get_pos())
-                and pygame.mouse.get_pressed()[0]
-            ):
+            if (self.rect.collidepoint(pygame.mouse.get_pos())
+                    and pygame.mouse.get_pressed()[0]):
                 self.pressed = True
                 pygame.draw.rect(
                     self.surf,
@@ -627,11 +637,13 @@ class Button:
             self.text.get_width() + self.margins,
             self.text.get_height() + self.margins,
         )
-        self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.surf = pygame.Surface((self.rect.width, self.rect.height),
+                                   pygame.SRCALPHA)
 
 
 class Enemy:
     """ """
+
     def __init__(self, imgs, x, y):
         self.imgs = imgs
         self.img = self.imgs["rest"]
@@ -649,10 +661,8 @@ class Enemy:
     def draw(self):
         """ """
         distance = math.dist((self.x, self.y), (player.x, player.y))
-        if (
-            -64 < self.x - offsetx < screen.get_width()
-            and -64 < self.y + offsety < screen.get_height()
-        ):
+        if (-64 < self.x - offsetx < screen.get_width()
+                and -64 < self.y + offsety < screen.get_height()):
             if self.resting:
                 img = self.imgs["rest"]
             elif time.time() % 0.4 < 0.2:
@@ -713,7 +723,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.x -= dt_adjusted(0.5)
                                 enemy.x += dt_adjusted(0.5)
                                 break
@@ -729,7 +740,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.x += dt_adjusted(0.5)
                                 enemy.x -= dt_adjusted(0.5)
                                 break
@@ -745,7 +757,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.y += dt_adjusted(0.5)
                                 enemy.y -= dt_adjusted(0.5)
                                 break
@@ -761,7 +774,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.y -= dt_adjusted(0.5)
                                 enemy.y += dt_adjusted(0.5)
                                 break
@@ -778,7 +792,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.x += dt_adjusted(1)
                                 break
                         if self.x > round(player.x):
@@ -793,7 +808,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.x -= dt_adjusted(1)
                                 break
                         if self.x < round(player.x):
@@ -808,7 +824,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.y -= dt_adjusted(1)
                                 break
                         if -self.y < round(player.y):
@@ -823,7 +840,8 @@ class Enemy:
                             self.img.get_height(),
                         )
                         for enemy in enemys:
-                            if enemy != self and self.rect.colliderect(enemy.rect):
+                            if enemy != self and self.rect.colliderect(
+                                    enemy.rect):
                                 self.y += dt_adjusted(1)
                                 break
                         if -self.y > round(player.y):
@@ -911,7 +929,10 @@ def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
     for i in range(99):
         for j in range(99):
             if tilemap[i][j] == "Grass":
-                sides = [False, False, False, False, False, False, False, False, False]
+                sides = [
+                    False, False, False, False, False, False, False, False,
+                    False
+                ]
                 ntw = False
                 if tilemap[i][j + 1] == "Water":
                     sides[1] = True
@@ -976,19 +997,21 @@ if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
 noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
-tilemap, tiles = create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs)
+tilemap, tiles = create_tiles(noise, player, imgs, grassimgs, waterimgs,
+                              hbimgs)
 
 offsetx = 0
 offsety = 0
 menu = "Start"
 quitb = Button(screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit")
 rsb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Restart")
-resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
-debugb = Button(
-    screen.get_width() / 2, screen.get_height() / 2 - 160, "Debug Mode (OFF)"
-)
+resumeb = Button(screen.get_width() / 2,
+                 screen.get_height() / 2 + 75, "Resume")
+debugb = Button(screen.get_width() / 2,
+                screen.get_height() / 2 - 160, "Debug Mode (OFF)")
 # Create a new game button
-newgameb = Button(screen.get_width() / 2, screen.get_height() / 2 - 120, "New Game")
+newgameb = Button(screen.get_width() / 2,
+                  screen.get_height() / 2 - 120, "New Game")
 enemys = []
 for i in range(10):
     enemys.append(Enemy(purpimgs, i * 100, 50))
@@ -997,9 +1020,11 @@ resumeb.active = False
 debugb.active = False
 newgameb.active = False
 pygame.key.set_repeat(200, 25)
-deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
+deadsurf = pygame.Surface(
+    (screen.get_width(), screen.get_height())).convert_alpha()
 deadsurf.fill((255, 0, 0, 100))
-pausesurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
+pausesurf = pygame.Surface(
+    (screen.get_width(), screen.get_height())).convert_alpha()
 pausesurf.fill((0, 0, 0, 100))
 while True:
     screen.fill((0, 0, 25))
@@ -1010,12 +1035,10 @@ while True:
             sys.exit()
         elif event.type == pygame.VIDEORESIZE:
             deadsurf = pygame.Surface(
-                (screen.get_width(), screen.get_height())
-            ).convert_alpha()
+                (screen.get_width(), screen.get_height())).convert_alpha()
             deadsurf.fill((255, 0, 0, 100))
             pausesurf = pygame.Surface(
-                (screen.get_width(), screen.get_height())
-            ).convert_alpha()
+                (screen.get_width(), screen.get_height())).convert_alpha()
             pausesurf.fill((0, 0, 0, 100))
     if quitb.activated:
         pygame.quit()
@@ -1032,15 +1055,15 @@ while True:
         if grass_offset_y >= grassimgs["g"].get_height():
             grass_offset_y = 0
         # Draw a matrix of the image "grassimgs["g"]"
-        for i in range(
-            -grassimgs["g"].get_width(), screen.get_width(), grassimgs["g"].get_width()
-        ):
+        for i in range(-grassimgs["g"].get_width(), screen.get_width(),
+                       grassimgs["g"].get_width()):
             for j in range(
-                -grassimgs["g"].get_height(),
-                screen.get_height(),
-                grassimgs["g"].get_height(),
+                    -grassimgs["g"].get_height(),
+                    screen.get_height(),
+                    grassimgs["g"].get_height(),
             ):
-                screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
+                screen.blit(grassimgs["g"],
+                            (i + grass_offset_x, j + grass_offset_y))
         quitb.active = True
         newgameb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 105)
@@ -1101,9 +1124,11 @@ while True:
             screen.blit(pausesurf, (0, 0))
             quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
             quitb.draw()
-            resumeb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
+            resumeb.setpos(screen.get_width() / 2,
+                           screen.get_height() / 2 + 154)
             resumeb.draw()
-            debugb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 208)
+            debugb.setpos(screen.get_width() / 2,
+                          screen.get_height() / 2 + 208)
             debugb.draw()
             txt = fontbig.render("Paused", False, (255, 255, 255))
             screen.blit(
@@ -1118,17 +1143,18 @@ while True:
             if debugb.activated:
                 if DEBUG:
                     debugb.text.fill((0, 0, 0, 0))
-                    debugb.text = font.render(
-                        "Debug Mode (OFF)", False, (255, 255, 255)
-                    )
+                    debugb.text = font.render("Debug Mode (OFF)", False,
+                                              (255, 255, 255))
                     debugb.update_rect()
                     DEBUG = False
                 else:
                     debugb.text.fill((0, 0, 0, 0))
-                    debugb.text = font.render("Debug Mode (ON)", False, (255, 255, 255))
+                    debugb.text = font.render("Debug Mode (ON)", False,
+                                              (255, 255, 255))
                     debugb.update_rect()
                     DEBUG = True
     clock.tick()
-    screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
+    screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)),
+                (0, 0))
 
     pygame.display.flip()
