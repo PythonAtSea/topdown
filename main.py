@@ -101,12 +101,14 @@ keybinds = {
 
 
 class Tile:
+    """ """
     def __init__(self, x, y, img):
         self.x = x * 64
         self.y = y * 64
         self.img = img
 
     def draw(self):
+        """ """
         if (
             -64 < self.x - offsetx < screen.get_width()
             and -64 < self.y + offsety < screen.get_height()
@@ -115,11 +117,13 @@ class Tile:
 
 
 class Barrier(Tile):
+    """ """
     def __init__(self, x, y):
         super().__init__(x, y, imgs[1])
 
 
 class Grass(Tile):
+    """ """
     def __init__(
         self, x, y, up, down, left, right, test, upleft, upright, downleft, downright
     ):
@@ -170,6 +174,7 @@ class Grass(Tile):
 
 
 class Water(Tile):
+    """ """
     def __init__(self, x, y, up, down, left, right, test):
         super().__init__(x, y, imgs[0])
         self.up = up
@@ -207,6 +212,7 @@ class Water(Tile):
 
 
 class Player:
+    """ """
     def __init__(self):
         self.x = 0
         self.y = 0
@@ -270,6 +276,7 @@ class Player:
         )
 
     def draw(self):
+        """ """
         if DEBUG:
             pygame.draw.rect(
                 screen,
@@ -421,6 +428,13 @@ class Player:
                         )
 
     def damage(self, amount, damagetype="normal", secondary=""):
+        """
+
+        :param amount: 
+        :param damagetype:  (Default value = "normal")
+        :param secondary:  (Default value = "")
+
+        """
         if self.health > 0 and self.ldt < time.time() and not game_paused:
             punch.play()
             self.health -= amount
@@ -433,6 +447,7 @@ class Player:
             return False
 
     def move(self):
+        """ """
         if not game_paused:
             self.x += self.dx
             self.y += self.dy
@@ -506,6 +521,7 @@ class Player:
                 self.moving = True
 
     def respawn(self):
+        """ """
         self.health = 100
         self.hunger = 100
         self.dead = False
@@ -518,6 +534,7 @@ class Player:
 
 
 class Button:
+    """ """
     def __init__(self, x, y, text, margins=10):
         self.x = x
         self.y = y
@@ -535,6 +552,7 @@ class Button:
         self.activated = False
 
     def draw(self):
+        """ """
         if (
             not self.pressed
             and self.rect.collidepoint(pygame.mouse.get_pos())
@@ -586,6 +604,12 @@ class Button:
             screen.blit(self.surf, (self.rect.x, self.rect.y))
 
     def setpos(self, x, y):
+        """
+
+        :param x: 
+        :param y: 
+
+        """
         self.x = x
         self.y = y
         self.rect = pygame.Rect(
@@ -596,6 +620,7 @@ class Button:
         )
 
     def update_rect(self):
+        """ """
         self.rect = pygame.FRect(
             self.x - self.text.get_width() / 2 - self.margins / 2,
             self.y - self.text.get_height() / 2 - self.margins / 2,
@@ -606,6 +631,7 @@ class Button:
 
 
 class Enemy:
+    """ """
     def __init__(self, imgs, x, y):
         self.imgs = imgs
         self.img = self.imgs["rest"]
@@ -621,6 +647,7 @@ class Enemy:
         self.discoverdead = False
 
     def draw(self):
+        """ """
         distance = math.dist((self.x, self.y), (player.x, player.y))
         if (
             -64 < self.x - offsetx < screen.get_width()
@@ -659,6 +686,7 @@ class Enemy:
             )
 
     def update_rect(self):
+        """ """
         self.rect = pygame.Rect(
             self.x - self.img.get_width() / 2,
             -(self.y - self.img.get_height() / 2),
@@ -667,6 +695,7 @@ class Enemy:
         )
 
     def move(self):
+        """ """
         x = round(self.x)
         y = round(self.y)
         if not player.dead:
@@ -842,12 +871,27 @@ game_paused = True
 
 
 def dt_adjusted(value):
+    """
+
+    :param value: 
+
+    """
     if clock.get_fps() == 0 or (game_paused and menu != "Start"):
         return 0
     return value / clock.get_fps() * 60
 
 
 def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
+    """
+
+    :param noise: 
+    :param player: 
+    :param imgs: 
+    :param grassimgs: 
+    :param waterimgs: 
+    :param hbimgs: 
+
+    """
     tilemap = []
     tiles = []
     for i in range(100):
