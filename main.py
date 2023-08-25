@@ -430,7 +430,7 @@ class Player:
     def damage(self, amount, damagetype="normal", secondary=""):
         """
 
-        :param amount: 
+        :param amount:
         :param damagetype:  (Default value = "normal")
         :param secondary:  (Default value = "")
 
@@ -606,8 +606,8 @@ class Button:
     def setpos(self, x, y):
         """
 
-        :param x: 
-        :param y: 
+        :param x:
+        :param y:
 
         """
         self.x = x
@@ -873,7 +873,7 @@ game_paused = True
 def dt_adjusted(value):
     """
 
-    :param value: 
+    :param value:
 
     """
     if clock.get_fps() == 0 or (game_paused and menu != "Start"):
@@ -884,12 +884,12 @@ def dt_adjusted(value):
 def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
     """
 
-    :param noise: 
-    :param player: 
-    :param imgs: 
-    :param grassimgs: 
-    :param waterimgs: 
-    :param hbimgs: 
+    :param noise:
+    :param player:
+    :param imgs:
+    :param grassimgs:
+    :param waterimgs:
+    :param hbimgs:
 
     """
     tilemap = []
