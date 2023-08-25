@@ -106,7 +106,7 @@ class Tile:
         self.img = img
 
     def draw(self):
-        if (
+if (
             -64 < self.x - offsetx < screen.get_width()
             and -64 < self.y + offsety < screen.get_height()
         ):
@@ -532,23 +532,25 @@ class Button:
         self.active = True
         self.pressed = False
         self.activated = False
+        self.disabled = False
 
     def draw(self):
         if (
-            not self.pressed
-            and self.rect.collidepoint(pygame.mouse.get_pos())
-            and pygame.mouse.get_pressed()[0]
-            and self.active
-            and not self.activated
-        ):
-            onsound.play()
+    not self.pressed
+    and self.rect.collidepoint(pygame.mouse.get_pos())
+    and pygame.mouse.get_pressed()[0]
+    and self.active
+    and not self.activated
+    and not self.disabled
+):
+    onsound.play()
         if self.pressed and (
             not pygame.mouse.get_pressed()[0]
             or not self.rect.collidepoint(pygame.mouse.get_pos())
         ):
             offsound.play()
             self.pressed = False
-            if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if self.rect.collidepoint(pygame.mouse.get_pos()) and not self.disabled:
                 self.activated = True
         elif self.activated:
             self.activated = False
