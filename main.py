@@ -21,57 +21,96 @@ offsound = pygame.mixer.Sound("sounds/off.wav")
 SCALE_FACTOR = 4
 imgs = [
     pygame.transform.scale_by(pygame.image.load("images/w.png"), SCALE_FACTOR),
-    pygame.transform.scale_by(pygame.image.load("images/barrier.png"), SCALE_FACTOR),
-    pygame.transform.scale_by(pygame.image.load("images/barrier2.png"), SCALE_FACTOR),
+    pygame.transform.scale_by(pygame.image.load(
+        "images/barrier.png"), SCALE_FACTOR),
+    pygame.transform.scale_by(pygame.image.load(
+        "images/barrier2.png"), SCALE_FACTOR),
 ]
 red = pygame.surface.Surface((64, 64))
 red.fill((255, 0, 0))
 grassimgs = dict(
-    g=pygame.transform.scale_by(pygame.image.load("images/g.png"), SCALE_FACTOR),
-    gd=pygame.transform.scale_by(pygame.image.load("images/gd.png"), SCALE_FACTOR),
-    gu=pygame.transform.scale_by(pygame.image.load("images/gu.png"), SCALE_FACTOR),
-    gl=pygame.transform.scale_by(pygame.image.load("images/gl.png"), SCALE_FACTOR),
-    gr=pygame.transform.scale_by(pygame.image.load("images/gr.png"), SCALE_FACTOR),
-    gur=pygame.transform.scale_by(pygame.image.load("images/gur.png"), SCALE_FACTOR),
-    gul=pygame.transform.scale_by(pygame.image.load("images/gul.png"), SCALE_FACTOR),
-    gdr=pygame.transform.scale_by(pygame.image.load("images/gdr.png"), SCALE_FACTOR),
-    gdl=pygame.transform.scale_by(pygame.image.load("images/gdl.png"), SCALE_FACTOR),
-    dgul=pygame.transform.scale_by(pygame.image.load("images/dgul.png"), SCALE_FACTOR),
-    dgur=pygame.transform.scale_by(pygame.image.load("images/dgur.png"), SCALE_FACTOR),
-    dgdl=pygame.transform.scale_by(pygame.image.load("images/dgdl.png"), SCALE_FACTOR),
-    dgdr=pygame.transform.scale_by(pygame.image.load("images/dgdr.png"), SCALE_FACTOR),
-    gudl=pygame.transform.scale_by(pygame.image.load("images/gudl.png"), SCALE_FACTOR),
-    gudr=pygame.transform.scale_by(pygame.image.load("images/gudr.png"), SCALE_FACTOR),
-    gulr=pygame.transform.scale_by(pygame.image.load("images/gulr.png"), SCALE_FACTOR),
-    gdlr=pygame.transform.scale_by(pygame.image.load("images/gdlr.png"), SCALE_FACTOR),
+    g=pygame.transform.scale_by(
+        pygame.image.load("images/g.png"), SCALE_FACTOR),
+    gd=pygame.transform.scale_by(
+        pygame.image.load("images/gd.png"), SCALE_FACTOR),
+    gu=pygame.transform.scale_by(
+        pygame.image.load("images/gu.png"), SCALE_FACTOR),
+    gl=pygame.transform.scale_by(
+        pygame.image.load("images/gl.png"), SCALE_FACTOR),
+    gr=pygame.transform.scale_by(
+        pygame.image.load("images/gr.png"), SCALE_FACTOR),
+    gur=pygame.transform.scale_by(
+        pygame.image.load("images/gur.png"), SCALE_FACTOR),
+    gul=pygame.transform.scale_by(
+        pygame.image.load("images/gul.png"), SCALE_FACTOR),
+    gdr=pygame.transform.scale_by(
+        pygame.image.load("images/gdr.png"), SCALE_FACTOR),
+    gdl=pygame.transform.scale_by(
+        pygame.image.load("images/gdl.png"), SCALE_FACTOR),
+    dgul=pygame.transform.scale_by(
+        pygame.image.load("images/dgul.png"), SCALE_FACTOR),
+    dgur=pygame.transform.scale_by(
+        pygame.image.load("images/dgur.png"), SCALE_FACTOR),
+    dgdl=pygame.transform.scale_by(
+        pygame.image.load("images/dgdl.png"), SCALE_FACTOR),
+    dgdr=pygame.transform.scale_by(
+        pygame.image.load("images/dgdr.png"), SCALE_FACTOR),
+    gudl=pygame.transform.scale_by(
+        pygame.image.load("images/gudl.png"), SCALE_FACTOR),
+    gudr=pygame.transform.scale_by(
+        pygame.image.load("images/gudr.png"), SCALE_FACTOR),
+    gulr=pygame.transform.scale_by(
+        pygame.image.load("images/gulr.png"), SCALE_FACTOR),
+    gdlr=pygame.transform.scale_by(
+        pygame.image.load("images/gdlr.png"), SCALE_FACTOR),
     t=red,
 )
 waterimgs = dict(
     t=red,
-    w=pygame.transform.scale_by(pygame.image.load("images/w.png"), SCALE_FACTOR),
-    wu=pygame.transform.scale_by(pygame.image.load("images/wu.png"), SCALE_FACTOR),
-    wd=pygame.transform.scale_by(pygame.image.load("images/wd.png"), SCALE_FACTOR),
-    wl=pygame.transform.scale_by(pygame.image.load("images/wl.png"), SCALE_FACTOR),
-    wr=pygame.transform.scale_by(pygame.image.load("images/wr.png"), SCALE_FACTOR),
-    wul=pygame.transform.scale_by(pygame.image.load("images/wul.png"), SCALE_FACTOR),
-    wur=pygame.transform.scale_by(pygame.image.load("images/wur.png"), SCALE_FACTOR),
-    wdl=pygame.transform.scale_by(pygame.image.load("images/wdl.png"), SCALE_FACTOR),
-    wdr=pygame.transform.scale_by(pygame.image.load("images/wdr.png"), SCALE_FACTOR),
-    wudl=pygame.transform.scale_by(pygame.image.load("images/wudl.png"), SCALE_FACTOR),
-    wudr=pygame.transform.scale_by(pygame.image.load("images/wudr.png"), SCALE_FACTOR),
-    wulr=pygame.transform.scale_by(pygame.image.load("images/wulr.png"), SCALE_FACTOR),
-    wdlr=pygame.transform.scale_by(pygame.image.load("images/wdlr.png"), SCALE_FACTOR),
+    w=pygame.transform.scale_by(
+        pygame.image.load("images/w.png"), SCALE_FACTOR),
+    wu=pygame.transform.scale_by(
+        pygame.image.load("images/wu.png"), SCALE_FACTOR),
+    wd=pygame.transform.scale_by(
+        pygame.image.load("images/wd.png"), SCALE_FACTOR),
+    wl=pygame.transform.scale_by(
+        pygame.image.load("images/wl.png"), SCALE_FACTOR),
+    wr=pygame.transform.scale_by(
+        pygame.image.load("images/wr.png"), SCALE_FACTOR),
+    wul=pygame.transform.scale_by(
+        pygame.image.load("images/wul.png"), SCALE_FACTOR),
+    wur=pygame.transform.scale_by(
+        pygame.image.load("images/wur.png"), SCALE_FACTOR),
+    wdl=pygame.transform.scale_by(
+        pygame.image.load("images/wdl.png"), SCALE_FACTOR),
+    wdr=pygame.transform.scale_by(
+        pygame.image.load("images/wdr.png"), SCALE_FACTOR),
+    wudl=pygame.transform.scale_by(
+        pygame.image.load("images/wudl.png"), SCALE_FACTOR),
+    wudr=pygame.transform.scale_by(
+        pygame.image.load("images/wudr.png"), SCALE_FACTOR),
+    wulr=pygame.transform.scale_by(
+        pygame.image.load("images/wulr.png"), SCALE_FACTOR),
+    wdlr=pygame.transform.scale_by(
+        pygame.image.load("images/wdlr.png"), SCALE_FACTOR),
 )
 hbimgs = dict(
-    hb1=pygame.transform.scale_by(pygame.image.load("images/hb1.png"), SCALE_FACTOR),
-    hb2=pygame.transform.scale_by(pygame.image.load("images/hb2.png"), SCALE_FACTOR),
-    hb3=pygame.transform.scale_by(pygame.image.load("images/hb3.png"), SCALE_FACTOR),
+    hb1=pygame.transform.scale_by(
+        pygame.image.load("images/hb1.png"), SCALE_FACTOR),
+    hb2=pygame.transform.scale_by(
+        pygame.image.load("images/hb2.png"), SCALE_FACTOR),
+    hb3=pygame.transform.scale_by(
+        pygame.image.load("images/hb3.png"), SCALE_FACTOR),
 )
 healthimgs = dict(
-    h1=pygame.transform.scale_by(pygame.image.load("images/heart.png"), SCALE_FACTOR),
-    h2=pygame.transform.scale_by(pygame.image.load("images/heart2.png"), SCALE_FACTOR),
-    h3=pygame.transform.scale_by(pygame.image.load("images/heart3.png"), SCALE_FACTOR),
-    fh1=pygame.transform.scale_by(pygame.image.load("images/fheart.png"), SCALE_FACTOR),
+    h1=pygame.transform.scale_by(
+        pygame.image.load("images/heart.png"), SCALE_FACTOR),
+    h2=pygame.transform.scale_by(pygame.image.load(
+        "images/heart2.png"), SCALE_FACTOR),
+    h3=pygame.transform.scale_by(pygame.image.load(
+        "images/heart3.png"), SCALE_FACTOR),
+    fh1=pygame.transform.scale_by(
+        pygame.image.load("images/fheart.png"), SCALE_FACTOR),
     fh2=pygame.transform.scale_by(
         pygame.image.load("images/fheart2.png"), SCALE_FACTOR
     ),
@@ -83,8 +122,10 @@ purpimgs = dict(
     rest=pygame.transform.scale_by(
         pygame.image.load("images/purpguyrest.png"), SCALE_FACTOR
     ),
-    d1=pygame.transform.scale_by(pygame.image.load("images/pgd1.png"), SCALE_FACTOR),
-    d2=pygame.transform.scale_by(pygame.image.load("images/pgd2.png"), SCALE_FACTOR),
+    d1=pygame.transform.scale_by(
+        pygame.image.load("images/pgd1.png"), SCALE_FACTOR),
+    d2=pygame.transform.scale_by(
+        pygame.image.load("images/pgd2.png"), SCALE_FACTOR),
 )
 punch = pygame.mixer.Sound("sounds/punch.ogg")
 punch.set_volume(0.4)
@@ -388,35 +429,41 @@ class Player:
                 for i in range(10):
                     if displayhealth > (i * 10):
                         screen.blit(
-                            healthimgs["h1"], (i * 32 + screen.get_width() - 325, 0)
+                            healthimgs["h1"], (i * 32 +
+                                               screen.get_width() - 325, 0)
                         )
                     elif (
                         displayhealth > (i - 1 * 10) + 5
                         and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
-                            healthimgs["h2"], (i * 32 + screen.get_width() - 325, 0)
+                            healthimgs["h2"], (i * 32 +
+                                               screen.get_width() - 325, 0)
                         )
                     else:
                         screen.blit(
-                            healthimgs["h3"], (i * 32 + screen.get_width() - 325, 0)
+                            healthimgs["h3"], (i * 32 +
+                                               screen.get_width() - 325, 0)
                         )
             else:
                 for i in range(10):
                     if displayhealth > (i * 10):
                         screen.blit(
-                            healthimgs["fh1"], (i * 32 + screen.get_width() - 325, 0)
+                            healthimgs["fh1"], (i * 32 +
+                                                screen.get_width() - 325, 0)
                         )
                     elif (
                         displayhealth > (i - 1 * 10) + 5
                         and displayhealth > (i * 10) - 5
                     ):
                         screen.blit(
-                            healthimgs["fh2"], (i * 32 + screen.get_width() - 325, 0)
+                            healthimgs["fh2"], (i * 32 +
+                                                screen.get_width() - 325, 0)
                         )
                     else:
                         screen.blit(
-                            healthimgs["fh3"], (i * 32 + screen.get_width() - 325, 0)
+                            healthimgs["fh3"], (i * 32 +
+                                                screen.get_width() - 325, 0)
                         )
 
     def damage(self, amount, damagetype="normal", secondary=""):
@@ -528,7 +575,8 @@ class Button:
             self.text.get_width() + self.margins,
             self.text.get_height() + self.margins,
         )
-        self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.surf = pygame.Surface(
+            (self.rect.width, self.rect.height), pygame.SRCALPHA)
         self.active = True
         self.pressed = False
         self.activated = False
@@ -601,7 +649,8 @@ class Button:
             self.text.get_width() + self.margins,
             self.text.get_height() + self.margins,
         )
-        self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.surf = pygame.Surface(
+            (self.rect.width, self.rect.height), pygame.SRCALPHA)
 
 
 class Enemy:
@@ -866,7 +915,8 @@ def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
     for i in range(99):
         for j in range(99):
             if tilemap[i][j] == "Grass":
-                sides = [False, False, False, False, False, False, False, False, False]
+                sides = [False, False, False, False,
+                         False, False, False, False, False]
                 ntw = False
                 if tilemap[i][j + 1] == "Water":
                     sides[1] = True
@@ -925,24 +975,28 @@ def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
             tiles.append(j)
     return tilemap, tiles
 
+
 SEED = 1
 if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
 noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
-tilemap, tiles = create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs)
+tilemap, tiles = create_tiles(
+    noise, player, imgs, grassimgs, waterimgs, hbimgs)
 
 offsetx = 0
 offsety = 0
 menu = "Start"
 quitb = Button(screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit")
 rsb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Restart")
-resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
+resumeb = Button(screen.get_width() / 2,
+                 screen.get_height() / 2 + 75, "Resume")
 debugb = Button(
     screen.get_width() / 2, screen.get_height() / 2 - 160, "Debug Mode (OFF)"
 )
 # Create a new game button
-newgameb = Button(screen.get_width() / 2, screen.get_height() / 2 - 120, "New Game")
+newgameb = Button(screen.get_width() / 2,
+                  screen.get_height() / 2 - 120, "New Game")
 enemys = []
 for i in range(10):
     enemys.append(Enemy(purpimgs, i * 100, 50))
@@ -951,9 +1005,11 @@ resumeb.active = False
 debugb.active = False
 newgameb.active = False
 pygame.key.set_repeat(200, 25)
-deadsurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
+deadsurf = pygame.Surface(
+    (screen.get_width(), screen.get_height())).convert_alpha()
 deadsurf.fill((255, 0, 0, 100))
-pausesurf = pygame.Surface((screen.get_width(), screen.get_height())).convert_alpha()
+pausesurf = pygame.Surface(
+    (screen.get_width(), screen.get_height())).convert_alpha()
 pausesurf.fill((0, 0, 0, 100))
 while True:
     screen.fill((0, 0, 25))
@@ -994,7 +1050,8 @@ while True:
                 screen.get_height(),
                 grassimgs["g"].get_height(),
             ):
-                screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
+                screen.blit(grassimgs["g"],
+                            (i + grass_offset_x, j + grass_offset_y))
         quitb.active = True
         newgameb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 105)
@@ -1055,9 +1112,11 @@ while True:
             screen.blit(pausesurf, (0, 0))
             quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
             quitb.draw()
-            resumeb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 154)
+            resumeb.setpos(screen.get_width() / 2,
+                           screen.get_height() / 2 + 154)
             resumeb.draw()
-            debugb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 208)
+            debugb.setpos(screen.get_width() / 2,
+                          screen.get_height() / 2 + 208)
             debugb.draw()
             txt = fontbig.render("Paused", False, (255, 255, 255))
             screen.blit(
@@ -1079,10 +1138,12 @@ while True:
                     DEBUG = False
                 else:
                     debugb.text.fill((0, 0, 0, 0))
-                    debugb.text = font.render("Debug Mode (ON)", False, (255, 255, 255))
+                    debugb.text = font.render(
+                        "Debug Mode (ON)", False, (255, 255, 255))
                     debugb.update_rect()
                     DEBUG = True
     clock.tick()
-    screen.blit(font.render(str(int(clock.get_fps())), False, (255, 255, 255)), (0, 0))
+    screen.blit(font.render(str(int(clock.get_fps())),
+                False, (255, 255, 255)), (0, 0))
 
     pygame.display.flip()
