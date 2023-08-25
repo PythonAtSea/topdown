@@ -925,6 +925,7 @@ def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
             tiles.append(j)
     return tilemap, tiles
 
+
 SEED = 1
 if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
