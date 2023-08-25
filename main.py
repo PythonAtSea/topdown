@@ -1,10 +1,11 @@
-import sys
-import pygame
-from pygame.locals import *
-from perlin_noise import PerlinNoise
-import time
-import random
 import math
+import random
+import sys
+import time
+
+import pygame
+from perlin_noise import PerlinNoise
+from pygame.locals import *
 
 grass_offset_x = 0
 grass_offset_y = 0
