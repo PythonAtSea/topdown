@@ -207,6 +207,7 @@ class Water(Tile):
 
 class Player:
     def __init__(self):
+        self.deadtime = 0
         self.x = 0
         self.y = 0
         self.speed = 1.5
@@ -424,6 +425,16 @@ class Player:
             punch.play()
             self.health -= amount
             self.ldt = time.time() + 0.4
+            if self.health <= 0:
+                self.health = 0
+                self.dead = True
+                self.hunger = 0
+                self.moving = False
+                self.dir = ""
+                self.deadtime = time.time()
+                self.img = pygame.transform.scale_by(
+                    pygame.image.load("images/pd.png"), SCALE_FACTOR
+                )
             self.deathmessage = self.deathtypes[damagetype].format(
                 self.username, secondary
             )
@@ -503,6 +514,10 @@ class Player:
                 else:
                     self.x += dt_adjusted(3) * self.speed
                 self.moving = True
+        if time.time() < self.deadtime + 1:
+            rsb.disabled = True
+        else:
+            rsb.disabled = False
 
     def respawn(self):
         self.health = 100
@@ -940,13 +955,11 @@ if not SEED:
 noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
 tilemap, tiles = create_tiles(noise, imgs)
-
+starttile = random.choice((waterimgs["w"], grassimgs["g"]))
 offsetx = 0
 offsety = 0
 menu = "Start"
-quitb = Button(
-    screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit", disabled=True
-)
+quitb = Button(screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit")
 rsb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Restart")
 resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
 debugb = Button(
@@ -992,20 +1005,20 @@ while True:
     if menu == "Start":
         grass_offset_x += dt_adjusted(0.5)
         grass_offset_y += dt_adjusted(0.5)
-        if grass_offset_x >= grassimgs["g"].get_width():
+        if grass_offset_x >= starttile.get_width():
             grass_offset_x = 0
-        if grass_offset_y >= grassimgs["g"].get_height():
+        if grass_offset_y >= starttile.get_height():
             grass_offset_y = 0
         # Draw a matrix of the image "grassimgs["g"]"
         for i in range(
-            -grassimgs["g"].get_width(), screen.get_width(), grassimgs["g"].get_width()
+            -starttile.get_width(), screen.get_width(), starttile.get_width()
         ):
             for j in range(
-                -grassimgs["g"].get_height(),
+                -starttile.get_height(),
                 screen.get_height(),
-                grassimgs["g"].get_height(),
+                starttile.get_height(),
             ):
-                screen.blit(grassimgs["g"], (i + grass_offset_x, j + grass_offset_y))
+                screen.blit(starttile, (i + grass_offset_x, j + grass_offset_y))
         quitb.active = True
         newgameb.active = True
         quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 105)
