@@ -517,34 +517,44 @@ class Player:
 
 
 class Button:
-    def __init__(self, x, y, text, margins=10):
+    def __init__(self, x, y, text, margins=10, disabled=False):
         self.x = x
         self.y = y
-        self.text = font.render(text, False, (255, 255, 255))
+        self.text = text
+        text = font.render(self.text, False, (255, 255, 255))
         self.margins = margins
         self.rect = pygame.FRect(
-            self.x - self.text.get_width() / 2 - self.margins / 2,
-            self.y - self.text.get_height() / 2 - self.margins / 2,
-            self.text.get_width() + self.margins,
-            self.text.get_height() + self.margins,
+            self.x - text.get_width() / 2 - self.margins / 2,
+            self.y - text.get_height() / 2 - self.margins / 2,
+            text.get_width() + self.margins,
+            text.get_height() + self.margins,
         )
         self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         self.active = True
         self.pressed = False
         self.activated = False
+        self.disabled = disabled
 
     def draw(self):
+        if not self.disabled:
+            text = font.render(self.text, False, (255, 255, 255))
+        else:
+            text = font.render(self.text, False, (150, 150, 150))
         if (
             not self.pressed
             and self.rect.collidepoint(pygame.mouse.get_pos())
             and pygame.mouse.get_pressed()[0]
             and self.active
             and not self.activated
+            and not self.disabled
         ):
             onsound.play()
         if self.pressed and (
-            not pygame.mouse.get_pressed()[0]
-            or not self.rect.collidepoint(pygame.mouse.get_pos())
+            (
+                not pygame.mouse.get_pressed()[0]
+                or not self.rect.collidepoint(pygame.mouse.get_pos())
+            )
+            and not self.disabled
         ):
             offsound.play()
             self.pressed = False
@@ -556,6 +566,7 @@ class Button:
             if (
                 self.rect.collidepoint(pygame.mouse.get_pos())
                 and pygame.mouse.get_pressed()[0]
+                and not self.disabled
             ):
                 self.pressed = True
                 pygame.draw.rect(
@@ -576,10 +587,10 @@ class Button:
                     (0, 0, self.rect.width, self.rect.height),
                 )
             self.surf.blit(
-                self.text,
+                text,
                 (
-                    self.rect.width / 2 - self.text.get_width() / 2,
-                    self.rect.height / 2 - self.text.get_height() / 2,
+                    self.rect.width / 2 - text.get_width() / 2,
+                    self.rect.height / 2 - text.get_height() / 2,
                 ),
             )
             screen.blit(self.surf, (self.rect.x, self.rect.y))
@@ -587,19 +598,21 @@ class Button:
     def setpos(self, x, y):
         self.x = x
         self.y = y
+        text = font.render(self.text, False, (255, 255, 255))
         self.rect = pygame.Rect(
-            self.x - self.text.get_width() / 2 - self.margins / 2,
-            self.y - self.text.get_height() / 2 - self.margins / 2,
-            self.text.get_width() + self.margins,
-            self.text.get_height() + self.margins,
+            self.x - text.get_width() / 2 - self.margins / 2,
+            self.y - text.get_height() / 2 - self.margins / 2,
+            text.get_width() + self.margins,
+            text.get_height() + self.margins,
         )
 
     def update_rect(self):
+        text = font.render(self.text, False, (255, 255, 255))
         self.rect = pygame.FRect(
-            self.x - self.text.get_width() / 2 - self.margins / 2,
-            self.y - self.text.get_height() / 2 - self.margins / 2,
-            self.text.get_width() + self.margins,
-            self.text.get_height() + self.margins,
+            self.x - text.get_width() / 2 - self.margins / 2,
+            self.y - text.get_height() / 2 - self.margins / 2,
+            text.get_width() + self.margins,
+            text.get_height() + self.margins,
         )
         self.surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
 
@@ -803,7 +816,7 @@ class Enemy:
         if self.rect.colliderect(player.rect):
             if player.dead:
                 self.discoverdead = True
-            if player.damage(20, "slain", "a zombie"):
+            if player.damage(20, "slain", "a purple shlump"):
                 dx = player.x - self.x
                 dy = player.y + self.y
                 distance = math.sqrt(dx**2 + dy**2)
@@ -931,7 +944,9 @@ tilemap, tiles = create_tiles(noise, imgs)
 offsetx = 0
 offsety = 0
 menu = "Start"
-quitb = Button(screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit")
+quitb = Button(
+    screen.get_width() / 2, screen.get_height() / 2 - 80, "Quit", disabled=True
+)
 rsb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Restart")
 resumeb = Button(screen.get_width() / 2, screen.get_height() / 2 + 75, "Resume")
 debugb = Button(
