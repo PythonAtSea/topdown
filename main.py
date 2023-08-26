@@ -648,7 +648,7 @@ class Enemy:
         self.discoverdead = False
 
     def draw(self):
-        distance = math.dist((self.x, self.y), (player.x, player.y))
+        distance = math.dist((self.x, -self.y), (player.x, player.y))
         if (
             -64 < self.x - offsetx < screen.get_width()
             and -64 < self.y + offsety < screen.get_height()
@@ -699,7 +699,7 @@ class Enemy:
         if not player.dead:
             self.discoverdead = False
         distance = math.dist((self.x, self.y), (player.x, player.y))
-        if distance < 400:
+        if True:
             if not self.discoverdead:
                 if self.x < round(player.x) and abs(self.x - player.x) > 1:
                     for _ in range(3):
@@ -765,7 +765,7 @@ class Enemy:
                                 break
                         if -self.y > round(player.y):
                             break
-            else:
+            elif distance < 400:
                 if self.x < round(player.x) and abs(self.x - player.x) > 1:
                     for _ in range(3):
                         self.x -= dt_adjusted(1)
@@ -951,7 +951,7 @@ def create_tiles(noise, imgs):
 
 SEED = 1
 if not SEED:
-    seed = random.randint(-1125899906842624, 1125899906842624)
+    SEED = random.randint(-1125899906842624, 1125899906842624)
 noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
 tilemap, tiles = create_tiles(noise, imgs)
@@ -1030,8 +1030,9 @@ while True:
         # Check if the new game button is activated
         if newgameb.activated:
             menu = "Game"
-        if keys[K_p]:
-            menu = "Game"
+            SEED = random.randint(-1125899906842624, 1125899906842624)
+            noise = PerlinNoise(octaves=1, seed=SEED)
+            tilemap, tiles = create_tiles(noise, imgs)
         # Draw the title "Topdown"
         title_surface = fontbig.render("TOPDOWN", False, (255, 255, 255))
         screen.blit(
@@ -1058,12 +1059,20 @@ while True:
             quitb.active = True
             rsb.active = True
             screen.blit(deadsurf, (0, 0))
-            txt = fontbig.render(player.deathmessage, False, (255, 255, 255))
+            txt = font.render(player.deathmessage, False, (255, 255, 255))
             screen.blit(
                 txt,
                 (
                     screen.get_width() / 2 - txt.get_width() / 2,
                     screen.get_height() / 2 - 100,
+                ),
+            )
+            txt = fontbig.render("You died!", False, (255, 255, 255))
+            screen.blit(
+                txt,
+                (
+                    screen.get_width() / 2 - txt.get_width() / 2,
+                    screen.get_height() / 2 - 150,
                 ),
             )
             quitb.setpos(screen.get_width() / 2, screen.get_height() / 2 + 100)
@@ -1095,15 +1104,11 @@ while True:
                 game_paused = False
             if debugb.activated:
                 if DEBUG:
-                    debugb.text.fill((0, 0, 0, 0))
-                    debugb.text = font.render(
-                        "Debug Mode (OFF)", False, (255, 255, 255)
-                    )
+                    debugb.text = "Debug Mode (OFF)"
                     debugb.update_rect()
                     DEBUG = False
                 else:
-                    debugb.text.fill((0, 0, 0, 0))
-                    debugb.text = font.render("Debug Mode (ON)", False, (255, 255, 255))
+                    debugb.text = "Debug Mode (ON)"
                     debugb.update_rect()
                     DEBUG = True
     clock.tick()
