@@ -846,7 +846,7 @@ def dt_adjusted(value):
     return value / clock.get_fps() * 60
 
 
-def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
+def create_tiles(noise, imgs):
     tilemap = []
     tiles = []
     for i in range(100):
@@ -893,19 +893,14 @@ def create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs):
         for j in range(99):
             if tilemap[i][j] == "Water":
                 sides = [False, False, False, False, False]
-                ntw = False
                 if type(tilemap[i][j + 1]) == Grass:
                     sides[1] = True
-                    ntw = True
                 if type(tilemap[i - 1][j]) == Grass:
                     sides[2] = True
-                    ntw = True
                 if type(tilemap[i + 1][j]) == Grass:
                     sides[3] = True
-                    ntw = True
                 if type(tilemap[i][j - 1]) == Grass:
                     sides[0] = True
-                    ntw = True
                 tilemap[i][j] = Water(i, j, *sides)
     for i in range(100):
         for j in range(100):
@@ -931,7 +926,7 @@ if not SEED:
     seed = random.randint(-1125899906842624, 1125899906842624)
 noise = PerlinNoise(octaves=1, seed=SEED)
 player = Player()
-tilemap, tiles = create_tiles(noise, player, imgs, grassimgs, waterimgs, hbimgs)
+tilemap, tiles = create_tiles(noise, imgs)
 
 offsetx = 0
 offsety = 0
