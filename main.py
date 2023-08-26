@@ -874,47 +874,16 @@ def dt_adjusted(value):
     return value / clock.get_fps() * 60
 
 
-def create_tiles(noise, imgs, map_size):
+def create_tiles(noise, imgs):
     tilemap = []
     tiles = []
-    for i in range(map_size):
+    for i in range(100):
         tilemap.append([])
-        for j in range(map_size):
+        for j in range(100):
             if noise((i / 10, j / 10)) > -0.1:
-                sides = [False, False, False, False, False, False, False, False, False]
-                ntw = False
-                if tilemap[i][j + 1] == "Water":
-                    sides[1] = True
-                    ntw = True
-                if tilemap[i - 1][j] == "Water":
-                    sides[2] = True
-                    ntw = True
-                if tilemap[i + 1][j] == "Water":
-                    sides[3] = True
-                    ntw = True
-                if tilemap[i][j - 1] == "Water":
-                    sides[0] = True
-                    ntw = True
-                if tilemap[i + 1][j + 1] == "Water" and not ntw:
-                    sides[8] = True
-                if tilemap[i - 1][j + 1] == "Water" and not ntw:
-                    sides[7] = True
-                if tilemap[i + 1][j - 1] == "Water" and not ntw:
-                    sides[6] = True
-                if tilemap[i - 1][j - 1] == "Water" and not ntw:
-                    sides[5] = True
-                tilemap[i][j] = Grass(i, j, *sides)
+                tilemap[i].append("Grass")
             else:
-                sides = [False, False, False, False, False]
-                if type(tilemap[i][j + 1]) == Grass:
-                    sides[1] = True
-                if type(tilemap[i - 1][j]) == Grass:
-                    sides[2] = True
-                if type(tilemap[i + 1][j]) == Grass:
-                    sides[3] = True
-                if type(tilemap[i][j - 1]) == Grass:
-                    sides[0] = True
-                tilemap[i][j] = Water(i, j, *sides)
+                tilemap[i].append("Water")
     for i in range(len(tilemap[0])):
         tilemap[0][i] = "Grass"
     for i in range(len(tilemap[99])):
