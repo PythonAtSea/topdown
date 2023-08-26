@@ -996,8 +996,12 @@ while True:
             ).convert_alpha()
             pausesurf.fill((0, 0, 0, 100))
     if quitb.activated:
-        pygame.quit()
-        sys.exit()
+        if menu == "Game":
+            menu = "Start"
+            quitb.active = False
+        else:
+            pygame.quit()
+            sys.exit()
     keys = pygame.key.get_pressed()
     if keys[K_q]:
         pygame.quit()
