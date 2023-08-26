@@ -1035,7 +1035,7 @@ while True:
         if newgameb.activated:
             menu = "Game"
             SEED = random.randint(-1125899906842624, 1125899906842624)
-            noise = PerlinNoise(octaves=1, seed=SEED)
+            noise = PerlinNoise(octaves=1, seed=SEED, mapsize=200)
             tilemap, tiles = create_tiles(noise, imgs)
         # Draw the title "Topdown"
         title_surface = fontbig.render("TOPDOWN", False, (255, 255, 255))
