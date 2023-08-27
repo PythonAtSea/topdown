@@ -938,11 +938,15 @@ def create_tiles(noise, imgs, mapsize=100):
                 tilemap[i][j] = Tile(i, j, imgs[0])
     for i in range(len(tilemap[0])):
         tilemap[0][i] = Barrier(tilemap[0][i].x / 64, tilemap[0][i].y / 64)
-    for i in range(len(tilemap[99])):
-        tilemap[mapsize - 1][i] = Barrier(tilemap[99][i].x / 64, tilemap[99][i].y / 64)
+    for i in range(len(tilemap[mapsize - 1])):
+        tilemap[mapsize - 1][i] = Barrier(
+            tilemap[mapsize - 1][i].x / 64, tilemap[mapsize - 1][i].y / 64
+        )
     for i in range(len(tilemap)):
         tilemap[i][0] = Barrier(tilemap[i][0].x / 64, tilemap[i][0].y / 64)
-        tilemap[i][mapsize - 1] = Barrier(tilemap[i][99].x / 64, tilemap[i][99].y / 64)
+        tilemap[i][mapsize - 1] = Barrier(
+            tilemap[i][mapsize - 1].x / 64, tilemap[i][mapsize - 1].y / 64
+        )
     for i in tilemap:
         for j in i:
             tiles.append(j)
@@ -1035,8 +1039,8 @@ while True:
         if newgameb.activated:
             menu = "Game"
             SEED = random.randint(-1125899906842624, 1125899906842624)
-            noise = PerlinNoise(octaves=1, seed=SEED, mapsize=200)
-            tilemap, tiles = create_tiles(noise, imgs)
+            noise = PerlinNoise(octaves=1, seed=SEED)
+            tilemap, tiles = create_tiles(noise, imgs, mapsize=200)
         # Draw the title "Topdown"
         title_surface = fontbig.render("TOPDOWN", False, (255, 255, 255))
         screen.blit(
