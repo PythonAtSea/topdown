@@ -10,6 +10,7 @@ import os
 # PyInstaller
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
     os.chdir(sys._MEIPASS)
+# End PyInstaller
 grass_offset_x = 0
 grass_offset_y = 0
 
