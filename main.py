@@ -15,6 +15,7 @@ screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE, 32)
 font = pygame.font.Font("fonts/Pixel.ttf", 35)
 fontbig = pygame.font.Font("fonts/Pixel.ttf", 50)
 fontsmall = pygame.font.Font("fonts/Pixel.ttf", 20)
+fontmed = pygame.font.Font("fonts/Pixel.ttf", 30)
 clock = pygame.time.Clock()
 onsound = pygame.mixer.Sound("sounds/on.wav")
 offsound = pygame.mixer.Sound("sounds/off.wav")
@@ -96,6 +97,7 @@ keybinds = {
     "sprint": K_LSHIFT,
     "kill": K_k,
     "pause": K_ESCAPE,
+    "quit": K_q,
 }
 
 
@@ -1007,7 +1009,7 @@ while True:
             pygame.quit()
             sys.exit()
     keys = pygame.key.get_pressed()
-    if keys[K_q]:
+    if keys[keybinds["quit"]]:
         pygame.quit()
         sys.exit()
     if menu == "Start":
@@ -1052,7 +1054,7 @@ while True:
         )
 
     elif menu == "Game":
-        if keys[K_p] and not player.dead:
+        if keys[keybinds["pause"]] and not player.dead:
             game_paused = True
         for tile in tiles:
             tile.draw()
@@ -1067,7 +1069,7 @@ while True:
             quitb.active = True
             rsb.active = True
             screen.blit(deadsurf, (0, 0))
-            txt = font.render(player.deathmessage, False, (255, 255, 255))
+            txt = fontmed.render(player.deathmessage, False, (255, 255, 255))
             screen.blit(
                 txt,
                 (
