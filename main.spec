@@ -10,7 +10,6 @@ a = Analysis(
     binaries=[],
     datas=[('./fonts', 'fonts'), ('./images', 'images'), ('./sounds', 'sounds')],
     hiddenimports=[],
-    hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
