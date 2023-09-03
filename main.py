@@ -6,6 +6,7 @@ import time
 import random
 import math
 import os
+
 NAME = "Topdown"
 pygame.display.set_caption(NAME)
 
@@ -23,6 +24,7 @@ font = pygame.font.Font("fonts/Pixel.ttf", 35)
 fontbig = pygame.font.Font("fonts/Pixel.ttf", 50)
 fontsmall = pygame.font.Font("fonts/Pixel.ttf", 20)
 fontmed = pygame.font.Font("fonts/Pixel.ttf", 30)
+fontxs = pygame.font.Font("fonts/Pixel.ttf", 10)
 clock = pygame.time.Clock()
 onsound = pygame.mixer.Sound("sounds/on.wav")
 offsound = pygame.mixer.Sound("sounds/off.wav")
