@@ -6,6 +6,8 @@ import time
 import random
 import math
 import os
+NAME = "Topdown"
+pygame.display.set_caption(NAME)
 
 # PyInstaller
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
@@ -1048,8 +1050,8 @@ while True:
             SEED = random.randint(-1125899906842624, 1125899906842624)
             noise = PerlinNoise(octaves=1, seed=SEED)
             tilemap, tiles = create_tiles(noise, imgs, mapsize=200)
-        # Draw the title "Topdown"
-        title_surface = fontbig.render("TOPDOWN", False, (255, 255, 255))
+        # Draw the title using the NAME variable
+        title_surface = fontbig.render(NAME, False, (255, 255, 255))
         screen.blit(
             title_surface,
             (
