@@ -1,5 +1,3 @@
-NAME = "Topdown"
-pygame.display.set_caption(NAME)
 import sys
 import pygame
 from pygame.locals import *
@@ -8,6 +6,8 @@ import time
 import random
 import math
 import os
+NAME = "Topdown"
+pygame.display.set_caption(NAME)
 
 # PyInstaller
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
