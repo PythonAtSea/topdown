@@ -1,4 +1,5 @@
 NAME = "Topdown"
+pygame.display.set_caption(NAME)
 import sys
 import pygame
 from pygame.locals import *
