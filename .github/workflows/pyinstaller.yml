@@ -1,3 +1,6 @@
+name: PyInstaller Action
+  uses: Martin005/pyinstaller-action@v1.2.0
+
 on:
   push:
     branches: [ master ]
@@ -8,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Executable
-        uses: sayyid5416/pyinstaller@v1.2
+        uses: Martin005/pyinstaller-action@v1.2.0
         with:
           spec: './main.spec'
           requirements: './requirements.txt'
