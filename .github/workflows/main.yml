@@ -21,7 +21,7 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: main
+        name: windows
         path: dist/windows/
   linux:
 
@@ -37,5 +37,5 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: main
+        name: linux
         path: dist/linux/
