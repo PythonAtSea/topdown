@@ -8,4 +8,4 @@ perlin-noise==1.12
 platformdirs==3.11.0
 pygame-ce==2.3.2
 pyinstaller==5.13.2
-pyinstaller-hooks-contrib==2023.8
+pyinstaller-hooks-contrib==2023.9
