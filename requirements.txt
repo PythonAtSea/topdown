@@ -1,5 +1,5 @@
 altgraph==0.17.4
-black==23.9.1
+black==23.10.1
 click==8.1.7
 mypy-extensions==1.0.0
 packaging==23.2
